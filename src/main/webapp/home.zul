@@ -1,39 +1,45 @@
 <zk>
 	<div width="960px" style="margin: 0 auto;">
-		<hbox hflex="true" height="540px" align="center"
+		<vbox hflex="true" height="540px" align="center"
 			pack="center">
-			<window apply="org.zkoss.bind.BindComposer"
-				title="Experiments" width="720px" border="normal"
-				viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.HomeViewModel')">
+			<include src="header.zul" />
+			<hbox hflex="true" height="540px" align="center"
+				pack="center">
+				<window apply="org.zkoss.bind.BindComposer"
+					title="Experiments" width="720px" border="normal"
+					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.HomeViewModel')">
 
-				<grid id="box" width="100%"
-					model="@load(vm.experiments)" autopaging="true">
+					<grid id="box" width="100%"
+						model="@load(vm.experiments)" autopaging="true">
 
-					<columns>
-						<column label="Name" />
-						<column label="Description" />
-						<column label="" />
-					</columns>
+						<columns>
+							<column label="Name" />
+							<column label="Description" />
+							<column label="" />
+						</columns>
 
-					<rows>
-						<template name="model" var="experiment">
-							<row>
-								<label value="@load(experiment.name)" />
-								<label
-									value="@load(experiment.description)" />
-								<hlayout>
-									<button label="Open"
-										onClick="@command('edit', experiment=experiment)" />
-									<button label="Delete"
-										onClick="@command('delete', experiment=experiment)" />
-								</hlayout>
-							</row>
-						</template>
-					</rows>
-				</grid>
-				<button label="New Experiment"
-					onClick="@command('add')" />
-			</window>
-		</hbox>
+						<rows>
+							<template name="model" var="experiment">
+								<row>
+									<label
+										value="@load(experiment.name)" />
+									<label
+										value="@load(experiment.description)" />
+									<hlayout>
+										<button label="Open"
+											onClick="@command('edit', experiment=experiment)" />
+										<button label="Delete"
+											onClick="@command('delete', experiment=experiment)" />
+									</hlayout>
+								</row>
+							</template>
+						</rows>
+					</grid>
+					<button label="New Experiment"
+						onClick="@command('add')" />
+				</window>
+			</hbox>
+			<include src="footer.zul" />
+		</vbox>
 	</div>
 </zk>

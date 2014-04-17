@@ -1,0 +1,12 @@
+<hbox hflex="true" align="center" pack="center"
+	style="color: #2980b9;  font-family: sans;">
+	<label value="2014 Sing" style="color: #7f8c8d;" />
+	<space spacing="20px" />
+	<label value="About us" />
+	<space spacing="20px" />
+	<label value="Blog" />
+	<space spacing="20px" />
+	<label value="GitHub" />
+	<space spacing="20px" />
+	<label value="Documentation" />
+</hbox>

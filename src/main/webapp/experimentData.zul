@@ -1,141 +1,152 @@
 <zk>
 	<div width="960px" style="margin: 0 auto;">
-		<vlayout apply="org.zkoss.bind.BindComposer"
-			viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')">
-			<window title="Tabs" width="960px" border="normal">
+		<vbox hflex="true" height="540px" align="center"
+			pack="center">
+			<include src="header.zul" />
+			<vlayout apply="org.zkoss.bind.BindComposer"
+				viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')">
+				<window title="Tabs" width="960px" border="normal">
 
-				<hlayout>
-					<button label="Experiment Data"
-						onClick="@command('toTab0')" />
-					<button label="Experiment Design"
-						onClick="@command('toTab1')" />
-				</hlayout>
-			</window>
-			<window title="Experiment Data" width="960px"
-				border="normal" onClose="@command('cancel')">
-
-				<vlayout>
 					<hlayout>
-						<label value="Name" />
-						<textbox value="@bind(vm.experiment.name)"
-							hflex="true" />
-
-						<label value="Start Date" />
-						<datebox value="@bind(vm.experiment.startDate)" />
-
-						<label value="End Date" />
-						<datebox value="@bind(vm.experiment.endDate)" />
+						<button label="Experiment Data"
+							onClick="@command('toTab0')" />
+						<button label="Experiment Design"
+							onClick="@command('toTab1')" />
 					</hlayout>
+				</window>
+				<window title="Experiment Data" width="960px"
+					border="normal" onClose="@command('cancel')">
 
-					<label value="Description" />
-					<textbox value="@bind(vm.experiment.description)"
-						hflex="true" rows="4" />
+					<vlayout>
+						<hlayout>
+							<label value="Name" />
+							<textbox value="@bind(vm.experiment.name)"
+								hflex="true" />
 
-					<hlayout hflex="true">
-						<label value="Each plate has " />
-						<intbox value="@bind(vm.experiment.numRows)"
-							cols="3" style="text-align: right" />
-						<combobox model="@load(vm.cellNameTypes)"
-							selectedItem="@bind(vm.experiment.rowNameType)">
-							<template name="model">
-								<comboitem label="@load(each)" />
-							</template>
-						</combobox>
-						<label value="rows and " />
+							<label value="Start Date" />
+							<datebox
+								value="@bind(vm.experiment.startDate)" />
 
-						<intbox value="@bind(vm.experiment.numCols)"
-							cols="3" style="text-align: right" />
-						<combobox model="@load(vm.cellNameTypes)"
-							selectedItem="@bind(vm.experiment.colNameType)">
-							<template name="model">
-								<comboitem label="@load(each)" />
-							</template>
-						</combobox>
-						<label value="columns" />
-					</hlayout>
+							<label value="End Date" />
+							<datebox
+								value="@bind(vm.experiment.endDate)" />
+						</hlayout>
 
-					<grid width="100%" model="@load(vm.model)">
-						<columns>
-							<column width="40px">
-								<button label="+" width="30px"
-									onClick="@command('addCondition')" />
-							</column>
-							<column label="Conditions" />
-						</columns>
+						<label value="Description" />
+						<textbox
+							value="@bind(vm.experiment.description)" hflex="true" rows="4" />
 
-						<rows>
-							<template name="model" var="condition">
-								<row>
-									<textbox inplace="true" hflex="true"
-										value="@bind(condition.condition.name)" />
-									<detail open="false"
-										fulfill="onOpen">
-										<grid hflex="true"
-											model="@load(condition)">
+						<hlayout hflex="true">
+							<label value="Each plate has " />
+							<intbox value="@bind(vm.experiment.numRows)"
+								cols="3" style="text-align: right" />
+							<combobox model="@load(vm.cellNameTypes)"
+								selectedItem="@bind(vm.experiment.rowNameType)">
+								<template name="model">
+									<comboitem label="@load(each)" />
+								</template>
+							</combobox>
+							<label value="rows and " />
 
-											<columns>
-												<column width="40px">
-													<button label="+"
-														width="30px"
-														onClick="@command('addSample', condition=condition.condition)" />
-												</column>
-												<column label="Samples" />
-											</columns>
+							<intbox value="@bind(vm.experiment.numCols)"
+								cols="3" style="text-align: right" />
+							<combobox model="@load(vm.cellNameTypes)"
+								selectedItem="@bind(vm.experiment.colNameType)">
+								<template name="model">
+									<comboitem label="@load(each)" />
+								</template>
+							</combobox>
+							<label value="columns" />
+						</hlayout>
 
-											<rows>
-												<template name="model"
-													var="sample">
-													<row>
-														<textbox
-															inplace="true" hflex="true"
-															value="@bind(sample.sample.name)" />
-														<detail
-															open="false" fulfill="onOpen">
-															<grid
-																hflex="true" model="@load(sample)">
-																<columns>
-																	<column
-																		width="40px">
-																		<button
-																			label="+" width="30px"
-																			onClick="@command('addReplicate', sample=sample.sample)" />
-																	</column>
-																	<column
-																		label="Replicates" />
-																</columns>
+						<grid width="100%" model="@load(vm.model)">
+							<columns>
+								<column width="40px">
+									<button label="+" width="30px"
+										onClick="@command('addCondition')" />
+								</column>
+								<column label="Conditions" />
+							</columns>
 
-																<rows>
-																	<template
-																		name="model" var="replicate">
-																		<row
-																			spans="2">
-																			<textbox
-																				inplace="true" hflex="true"
-																				value="@bind(replicate.name)" />
-																		</row>
-																	</template>
-																</rows>
-															</grid>
-														</detail>
-													</row>
-												</template>
-											</rows>
-										</grid>
-									</detail>
-								</row>
-							</template>
-						</rows>
-					</grid>
+							<rows>
+								<template name="model"
+									var="condition">
+									<row>
+										<textbox inplace="true"
+											hflex="true" value="@bind(condition.condition.name)" />
+										<detail open="false"
+											fulfill="onOpen">
+											<grid hflex="true"
+												model="@load(condition)">
 
-					<hbox pack="end" hflex="true">
-						<button label="Save" onClick="@command('save')" />
-						<button label="Reset"
-							onClick="@command('reset')" />
-						<button label="Cancel"
-							onClick="@command('cancel')" />
-					</hbox>
-				</vlayout>
-			</window>
-		</vlayout>
+												<columns>
+													<column
+														width="40px">
+														<button
+															label="+" width="30px"
+															onClick="@command('addSample', condition=condition.condition)" />
+													</column>
+													<column
+														label="Samples" />
+												</columns>
+
+												<rows>
+													<template
+														name="model" var="sample">
+														<row>
+															<textbox
+																inplace="true" hflex="true"
+																value="@bind(sample.sample.name)" />
+															<detail
+																open="false" fulfill="onOpen">
+																<grid
+																	hflex="true" model="@load(sample)">
+																	<columns>
+																		<column
+																			width="40px">
+																			<button
+																				label="+" width="30px"
+																				onClick="@command('addReplicate', sample=sample.sample)" />
+																		</column>
+																		<column
+																			label="Replicates" />
+																	</columns>
+
+																	<rows>
+																		<template
+																			name="model" var="replicate">
+																			<row
+																				spans="2">
+																				<textbox
+																					inplace="true" hflex="true"
+																					value="@bind(replicate.name)" />
+																			</row>
+																		</template>
+																	</rows>
+																</grid>
+															</detail>
+														</row>
+													</template>
+												</rows>
+											</grid>
+										</detail>
+									</row>
+								</template>
+							</rows>
+						</grid>
+
+						<hbox pack="end" hflex="true">
+							<button label="Save"
+								onClick="@command('save')" />
+							<button label="Reset"
+								onClick="@command('reset')" />
+							<button label="Cancel"
+								onClick="@command('cancel')" />
+						</hbox>
+					</vlayout>
+				</window>
+			</vlayout>
+			<include src="footer.zul" />
+		</vbox>
 	</div>
 </zk>
