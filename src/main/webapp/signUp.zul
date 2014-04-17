@@ -3,7 +3,7 @@
 		<vbox hflex="true" height="540px" align="center"
 			pack="center">
 			<include src="header.zul" />
-			<hbox hflex="true" height="540px" align="center"
+			<hbox hflex="true" height="270px" align="center"
 				pack="center">
 				<window apply="org.zkoss.bind.BindComposer"
 					title="Sign up" width="240px" border="normal"

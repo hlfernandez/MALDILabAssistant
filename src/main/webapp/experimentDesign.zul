@@ -1,9 +1,8 @@
 <zk>
 	<div width="960px" style="margin: 0 auto;">
-		<vbox hflex="true" height="540px" align="center"
-			pack="center">
+		<vbox align="center">
 			<include src="header.zul" />
-			<vlayout apply="org.zkoss.bind.BindComposer"
+			<vbox apply="org.zkoss.bind.BindComposer" align="left"
 				viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')">
 				<window title="Tabs" width="960px" border="normal">
 					<hlayout>
@@ -87,14 +86,14 @@
 								</rows>
 							</grid>
 							<spreadsheet id="ss"
-								src="/WEB-INF/books/ss.xlsx" width="720px"
-								maxVisibleRows="@load(vm.experiment.numRows)"
-								maxVisibleColumns="@load(vm.experiment.numCols)"
-								columnwidth="10" rowheight="10" />
+								src="/WEB-INF/books/ss.xlsx" width="720px" height="720px"
+								maxrows="@load(vm.experiment.numRows)"
+								maxcolumns="@load(vm.experiment.numCols)"
+								columnwidth="25" rowheight="25" />
 						</hlayout>
 					</window>
 				</hlayout>
-			</vlayout>
+			</vbox>
 			<include src="footer.zul" />
 		</vbox>
 	</div>

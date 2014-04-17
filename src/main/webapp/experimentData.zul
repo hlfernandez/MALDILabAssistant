@@ -3,7 +3,7 @@
 		<vbox hflex="true" height="540px" align="center"
 			pack="center">
 			<include src="header.zul" />
-			<vlayout apply="org.zkoss.bind.BindComposer"
+			<vbox apply="org.zkoss.bind.BindComposer" align="left"
 				viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')">
 				<window title="Tabs" width="960px" border="normal">
 
@@ -145,7 +145,7 @@
 						</hbox>
 					</vlayout>
 				</window>
-			</vlayout>
+			</vbox>
 			<include src="footer.zul" />
 		</vbox>
 	</div>
