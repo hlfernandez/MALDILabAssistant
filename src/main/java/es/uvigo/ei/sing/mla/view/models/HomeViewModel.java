@@ -7,8 +7,11 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
@@ -41,10 +44,20 @@ public class HomeViewModel {
 	}
 
 	@Command
-	public void delete(@BindingParam("experiment") Experiment experiment) {
-		this.experimentService.delete(experiment);
+	public void delete(@BindingParam("experiment") final Experiment experiment) {
+		EventListener<ClickEvent> clickListener = new EventListener<Messagebox.ClickEvent>() {
+			public void onEvent(ClickEvent event) throws Exception {
+				if (Messagebox.Button.YES.equals(event.getButton())) {
+					HomeViewModel.this.experimentService.delete(experiment);
+					Executions.getCurrent().sendRedirect("home.zul");
+				}
+			}
+		};
 
-		Executions.getCurrent().sendRedirect("home.zul");
+		Messagebox.show("Are you sure you want to delete that experiment?",
+				"Delete Experiment", new Messagebox.Button[] {
+						Messagebox.Button.YES, Messagebox.Button.NO },
+				Messagebox.QUESTION, clickListener);
 	}
 
 	@Command
