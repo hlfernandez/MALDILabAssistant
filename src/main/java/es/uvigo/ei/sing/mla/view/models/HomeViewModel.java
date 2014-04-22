@@ -40,7 +40,7 @@ public class HomeViewModel {
 	@Command
 	public void edit(@BindingParam("experiment") Experiment experiment) {
 		Executions.getCurrent().sendRedirect(
-				"experimentData.zul?id=" + experiment.getId());
+				"experiment.zul?id=" + experiment.getId());
 	}
 
 	@Command
@@ -62,6 +62,6 @@ public class HomeViewModel {
 
 	@Command
 	public void add() {
-		Executions.getCurrent().sendRedirect("experimentData.zul");
+		Executions.getCurrent().sendRedirect("experiment.zul");
 	}
 }

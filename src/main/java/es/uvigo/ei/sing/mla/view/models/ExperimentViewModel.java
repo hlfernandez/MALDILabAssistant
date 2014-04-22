@@ -56,6 +56,42 @@ public class ExperimentViewModel {
 	public CellNameType[] getCellNameTypes() {
 		return CellNameType.values();
 	}
+	
+	private Replicate selectedReplicate;
+	private Sample selectedSample;
+	
+	
+	
+	public Sample getSelectedSample() {
+		return selectedSample;
+	}
+
+	@Command("changeSelectedSample")
+	@NotifyChange({ "selectedSample", "selectedReplicate" })
+	public void setSelectedSample(
+		@BindingParam("sample") Sample selectedSample
+	) {
+		this.selectedSample = selectedSample;
+		this.selectedReplicate = null;
+	}
+
+	public Replicate getSelectedReplicate() {
+		return selectedReplicate;
+	}
+
+	@Command("changeSelectedReplicate")
+	@NotifyChange({ "selectedSample", "selectedReplicate" })
+	public void setSelectedReplicate(
+		@BindingParam("replicate") Replicate selectedReplicate
+	) {
+		this.selectedSample = null;
+		this.selectedReplicate = selectedReplicate;
+	}
+
+	@Command
+	public void drop(@BindingParam("object") Object object) {
+		System.out.println(object);
+	}
 
 	@Command
 	public void toTab0() {

@@ -1,0 +1,26 @@
+<?page title="Experiment" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<div width="960px" style="margin: 0 auto;">
+		<include src="header.zul" />
+		<window title="Experiment" border="normal" closable="true" 
+			apply="org.zkoss.bind.BindComposer"
+			viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')"
+			onClose="@command('cancel')">
+			<tabbox>
+				<tabs>
+					<tab label="Data" />
+					<tab label="Design" />
+				</tabs>
+				<tabpanels>
+					<tabpanel>
+						<include src="experimentData.zul" />
+					</tabpanel>
+					<tabpanel>
+						<include src="experimentDesign.zul" />
+					</tabpanel>
+				</tabpanels>
+			</tabbox>
+		</window>
+		<include src="footer.zul" />
+	</div>
+</zk>

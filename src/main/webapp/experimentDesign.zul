@@ -1,100 +1,78 @@
 <zk>
-	<div width="960px" style="margin: 0 auto;">
-		<vbox align="center">
-			<include src="header.zul" />
-			<vbox apply="org.zkoss.bind.BindComposer" align="left"
-				viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')">
-				<window title="Tabs" width="960px" border="normal">
-					<hlayout>
-						<button label="Experiment Data"
-							onClick="@command('toTab0')" />
-						<button label="Experiment Design"
-							onClick="@command('toTab1')" />
-					</hlayout>
-				</window>
-				<hlayout>
-					<window title="Experiment Data" width="960px"
-						border="normal" onClose="@command('cancel')">
-
-						<hlayout>
-							<grid width="240px"
-								model="@load(vm.model)">
-								<columns>
-									<column width="40px" />
-									<column label="Conditions" />
-								</columns>
-								<rows>
-									<template name="model"
-										var="condition">
-										<row>
-											<hlayout>
-												<colorbox
-													value="@bind(condition.condition.color)" />
-												<label hflex="true"
-													value="@load(condition.condition.name)" />
-											</hlayout>
-											<detail open="false"
-												fulfill="onOpen">
-												<grid hflex="true"
-													model="@load(condition)">
-													<columns>
-														<column
-															width="40px" />
-														<column
-															label="Samples" />
-													</columns>
-													<rows>
-														<template
-															name="model" var="sample">
-															<row>
-																<hlayout>
-																	<colorbox
-																		value="@bind(sample.sample.color)" />
-																	<label
-																		hflex="true" value="@load(sample.sample.name)" />
-																</hlayout>
-																<detail
-																	open="false" fulfill="onOpen">
-																	<grid
-																		hflex="true" model="@load(sample)">
-																		<columns>
-																			<column
-																				label="Replicates" />
-																		</columns>
-																		<rows>
-																			<template
-																				name="model" var="replicate">
-																				<row>
-																					<hlayout>
-																						<colorbox
-																							value="@bind(replicate.color)" />
-																						<label
-																							hflex="true" value="@load(replicate.name)" />
-																					</hlayout>
-																				</row>
-																			</template>
-																		</rows>
-																	</grid>
-																</detail>
-															</row>
-														</template>
-													</rows>
-												</grid>
-											</detail>
-										</row>
-									</template>
-								</rows>
-							</grid>
-							<spreadsheet id="ss"
-								src="/WEB-INF/books/ss.xlsx" width="720px" height="720px"
-								maxrows="@load(vm.experiment.numRows)"
-								maxcolumns="@load(vm.experiment.numCols)"
-								columnwidth="25" rowheight="25" />
-						</hlayout>
-					</window>
-				</hlayout>
-			</vbox>
-			<include src="footer.zul" />
-		</vbox>
-	</div>
+		<hlayout>
+			<grid width="240px"
+				model="@load(vm.model)">
+				<columns>
+					<column width="40px" />
+					<column label="Conditions" />
+				</columns>
+				<rows>
+					<template name="model"
+						var="condition">
+						<row>
+							<cell>
+								<colorbox
+									value="@bind(condition.condition.color)" />
+								<label hflex="true"
+									value="@load(condition.condition.name)" />
+							</cell>
+							<detail open="false"
+								fulfill="onOpen">
+								<grid hflex="true"
+									model="@load(condition)">
+									<columns>
+										<column
+											width="40px" />
+										<column
+											label="Samples" />
+									</columns>
+									<rows>
+										<template
+											name="model" var="sample">
+											<row>
+												<cell>
+													<colorbox
+														value="@bind(sample.sample.color)" />
+													<label hflex="true" value="@load(sample.sample.name)" />
+													<checkbox checked="@load(vm.selectedSample eq sample.sample)" 
+													onCheck="@command('changeSelectedSample', sample=sample.sample)"/>
+												</cell>
+												<detail
+													open="false" fulfill="onOpen">
+													<grid hflex="true" model="@load(sample)">
+														<columns>
+															<column
+																label="Replicates" />
+														</columns>
+														<rows>
+															<template
+																name="model" var="replicate">
+																<row>
+																	<cell>
+																		<colorbox value="@bind(replicate.color)" />
+																		<label hflex="true" value="@load(replicate.name)"/>
+																		<checkbox checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample)" 
+																		onCheck="@command('changeSelectedReplicate', replicate=replicate)"/>
+																	</cell>
+																</row>
+															</template>
+														</rows>
+													</grid>
+												</detail>
+											</row>
+										</template>
+									</rows>
+								</grid>
+							</detail>
+						</row>
+					</template>
+				</rows>
+			</grid>
+			<spreadsheet id="ss"
+				src="/WEB-INF/books/ss.xlsx" width="720px" height="720px"
+				maxrows="@load(vm.experiment.numRows)"
+				maxcolumns="@load(vm.experiment.numCols)"
+				columnwidth="25" rowheight="25"
+			/>
+		</hlayout>
 </zk>
