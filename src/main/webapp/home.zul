@@ -3,38 +3,38 @@
 		<vbox hflex="true" height="540px" align="center" pack="center">
 			<include src="header.zul" />
 			<hbox hflex="true" height="540px" align="center" pack="center">
-				<window apply="org.zkoss.bind.BindComposer"
-					title="Experiments" width="720px" height="400px" border="normal"
+				<window apply="org.zkoss.bind.BindComposer" title="Experiments"
+					width="720px" height="400px" border="normal"
 					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.HomeViewModel')">
 
-					<grid id="box" width="100%" vflex="true"
-						model="@load(vm.experiments)" autopaging="true">
+					<grid id="box" width="100%" vflex="true" model="@load(vm.experimentModel)"
+						autopaging="true">
 
 						<columns>
-							<column label="Name" width="120px"/>
-							<column label="Description"/>
-							<column label="" width="140px"/>
+							<column label="Name" width="120px" />
+							<column label="Description" />
+							<column label="" width="180px">
+								<image src="/icons/funnel.png" />
+								<textbox instant="true" hflex="true"
+									value="@bind(vm.filter.name)" onChange="@command('changeFilter')" />
+							</column>
 						</columns>
 
 						<rows>
 							<template name="model" var="experiment">
 								<row>
-									<label
-										value="@load(experiment.name)" />
-									<label
-										value="@load(experiment.description)" />
-									<hlayout>
-										<button label="Open"
-											onClick="@command('edit', experiment=experiment)" />
+									<label value="@load(experiment.name)" />
+									<label value="@load(experiment.description)" />
+									<hbox hflex="true" pack="center">
+										<button label="Open" onClick="@command('edit', experiment=experiment)" />
 										<button label="Delete"
 											onClick="@command('delete', experiment=experiment)" />
-									</hlayout>
+									</hbox>
 								</row>
 							</template>
 						</rows>
 					</grid>
-					<button label="New Experiment"
-						onClick="@command('add')" />
+					<button label="New Experiment" onClick="@command('add')" />
 				</window>
 			</hbox>
 			<include src="footer.zul" />

@@ -1,5 +1,6 @@
 package es.uvigo.ei.sing.mla.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
+import es.uvigo.ei.sing.mla.util.ExperimentFilter;
 
 @Repository
 public class ExperimentDAOImpl implements ExperimentDAO {
@@ -48,11 +50,27 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Experiment> list(User user) {
-		return em.createQuery("FROM Experiment ex WHERE ex.user = :user", Experiment.class)
-			.setParameter("user", user)
-		.getResultList();
+		return em
+				.createQuery("FROM Experiment ex WHERE ex.user = :user",
+						Experiment.class).setParameter("user", user)
+				.getResultList();
 	}
-	
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Experiment> listFilter(ExperimentFilter filter) {
+		List<Experiment> filterExperiments = new ArrayList<Experiment>();
+		String name = filter.getName().toLowerCase();
+
+		for (Experiment exp : this.list(filter.getUser())) {
+			if (exp.getName().toLowerCase().contains(name)) {
+				filterExperiments.add(exp);
+			}
+		}
+
+		return filterExperiments;
+	}
+
 	@Override
 	@Transactional(readOnly = true)
 	public Experiment reload(Experiment experiment) {
