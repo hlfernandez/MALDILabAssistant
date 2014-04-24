@@ -25,6 +25,12 @@ public class ExperimentViewModel {
 	private ExperimentService experimentService;
 
 	private Experiment experiment;
+	
+	private ConditionGroup selectedCondition;
+	private Sample selectedSample;
+	private Replicate selectedReplicate;
+	
+	private int plate;
 
 	@Init
 	public void init() {
@@ -57,10 +63,6 @@ public class ExperimentViewModel {
 	public CellNameType[] getCellNameTypes() {
 		return CellNameType.values();
 	}
-
-	private ConditionGroup selectedCondition;
-	private Sample selectedSample;
-	private Replicate selectedReplicate;
 
 	public ConditionGroup getSelectedCondition() {
 		return selectedCondition;

@@ -17,8 +17,9 @@ public class Replicate {
 	@Column(length = 32)
 	private String name;
 
-	private int col;
-	private int row;
+	private int plate = 0;
+	private int col = 0;
+	private int row = 0;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sampleId")
@@ -46,6 +47,18 @@ public class Replicate {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getPlate() {
+		return plate;
+	}
+
+	public void setPlate(int plate) {
+		this.plate = plate;
+	}
+	
+	public boolean isOnPlate() {
+		return plate > 0;
 	}
 
 	public int getCol() {

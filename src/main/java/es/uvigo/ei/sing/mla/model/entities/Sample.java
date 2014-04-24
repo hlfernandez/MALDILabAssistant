@@ -57,6 +57,16 @@ public class Sample extends Observable {
 		this.name = name;
 	}
 
+	public boolean isOnPlate() {
+		for (Replicate replicate : replicates) {
+			if (!replicate.isOnPlate()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public ConditionGroup getCondition() {
 		return this.condition;
 	}

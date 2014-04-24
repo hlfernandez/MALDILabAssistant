@@ -12,7 +12,8 @@
 							<colorbox value="@bind(condition.condition.color)" />
 							<label hflex="true" value="@load(condition.condition.name)" />
 							<checkbox checked="@load(vm.selectedCondition eq condition.condition)"
-								onCheck="@command('changeSelectedCondition', condition=condition.condition)" />
+								onCheck="@command('changeSelectedCondition', condition=condition.condition)"
+								disabled="@load(condition.isOnPlate)" />
 						</cell>
 						<detail open="false" fulfill="onOpen">
 							<grid hflex="true" model="@load(condition)">
@@ -28,7 +29,8 @@
 												<label hflex="true" value="@load(sample.sample.name)" />
 												<checkbox
 													checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
-													onCheck="@command('changeSelectedSample', sample=sample.sample)" />
+													onCheck="@command('changeSelectedSample', sample=sample.sample)"
+													disabled="@load(sample.isOnPlate)" />
 											</cell>
 											<detail open="false" fulfill="onOpen">
 												<grid hflex="true" model="@load(sample)">
@@ -43,7 +45,8 @@
 																	<label hflex="true" value="@load(replicate.name)" />
 																	<checkbox
 																		checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample or vm.selectedCondition eq replicate.sample.condition)"
-																		onCheck="@command('changeSelectedReplicate', replicate=replicate)" />
+																		onCheck="@command('changeSelectedReplicate', replicate=replicate)"
+																		disabled="@load(replicate.isOnPlate)" />
 																</cell>
 															</row>
 														</template>
@@ -59,8 +62,18 @@
 				</template>
 			</rows>
 		</grid>
-		<spreadsheet id="ss" src="/WEB-INF/books/ss.xlsx" width="720px"
-			height="720px" maxrows="@load(vm.experiment.numRows)" maxcolumns="@load(vm.experiment.numCols)"
-			columnwidth="25" rowheight="25" />
+		<tabbox width="720px" height="720px">
+			<tabs>
+				<tab label="Plate 1" />
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+					<spreadsheet id="ss" src="/WEB-INF/books/ss.xlsx"
+						hflex="true" vflex="true" maxrows="@load(vm.experiment.numRows)"
+						maxcolumns="@load(vm.experiment.numCols)" columnwidth="25"
+						rowheight="25" />
+				</tabpanel>
+			</tabpanels>
+		</tabbox>
 	</hlayout>
 </zk>
