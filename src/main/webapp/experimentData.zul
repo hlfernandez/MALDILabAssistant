@@ -2,38 +2,33 @@
 	<vlayout>
 		<hlayout>
 			<label value="Name" />
-			<textbox value="@bind(vm.experiment.name)"
-				hflex="true" />
+			<textbox value="@bind(vm.experiment.name)" hflex="true" />
 
 			<label value="Start Date" />
-			<datebox
-				value="@bind(vm.experiment.startDate)" />
+			<datebox value="@bind(vm.experiment.startDate)" />
 
 			<label value="End Date" />
-			<datebox
-				value="@bind(vm.experiment.endDate)" />
+			<datebox value="@bind(vm.experiment.endDate)" />
 		</hlayout>
 
 		<label value="Description" />
-		<textbox
-			value="@bind(vm.experiment.description)" hflex="true" rows="4" />
+		<textbox value="@bind(vm.experiment.description)" hflex="true"
+			rows="4" />
 
 		<hlayout hflex="true">
 			<label value="Each plate has " />
-			<intbox value="@bind(vm.experiment.numRows)"
-				cols="3" style="text-align: right" />
-			<combobox model="@load(vm.cellNameTypes)"
-				selectedItem="@bind(vm.experiment.rowNameType)">
+			<intbox value="@bind(vm.experiment.numRows)" cols="3"
+				style="text-align: right" />
+			<combobox model="@load(vm.cellNameTypes)" selectedItem="@bind(vm.experiment.rowNameType)">
 				<template name="model">
 					<comboitem label="@load(each)" />
 				</template>
 			</combobox>
 			<label value="rows and " />
 
-			<intbox value="@bind(vm.experiment.numCols)"
-				cols="3" style="text-align: right" />
-			<combobox model="@load(vm.cellNameTypes)"
-				selectedItem="@bind(vm.experiment.colNameType)">
+			<intbox value="@bind(vm.experiment.numCols)" cols="3"
+				style="text-align: right" />
+			<combobox model="@load(vm.cellNameTypes)" selectedItem="@bind(vm.experiment.colNameType)">
 				<template name="model">
 					<comboitem label="@load(each)" />
 				</template>
@@ -44,64 +39,60 @@
 		<grid width="100%" model="@load(vm.model)">
 			<columns>
 				<column width="40px">
-					<button label="+" width="30px"
-						onClick="@command('addCondition')" />
+					<button label="+" width="30px" onClick="@command('addCondition')" />
 				</column>
 				<column label="Conditions" />
 			</columns>
 
 			<rows>
-				<template name="model"
-					var="condition">
+				<template name="model" var="condition">
 					<row>
-						<textbox inplace="true"
-							hflex="true" value="@bind(condition.condition.name)" />
-						<detail open="false"
-							fulfill="onOpen">
-							<grid hflex="true"
-								model="@load(condition)">
+						<cell>
+							<textbox inplace="true" hflex="true"
+								value="@bind(condition.condition.name)" />
+							<button label="-" width="30px"
+								onClick="@command('removeCondition', condition=condition.condition)" />
+						</cell>
+
+						<detail open="false" fulfill="onOpen">
+							<grid hflex="true" model="@load(condition)">
 
 								<columns>
-									<column
-										width="40px">
-										<button
-											label="+" width="30px"
+									<column width="40px">
+										<button label="+" width="30px"
 											onClick="@command('addSample', condition=condition.condition)" />
 									</column>
-									<column
-										label="Samples" />
+									<column label="Samples" />
 								</columns>
 
 								<rows>
-									<template
-										name="model" var="sample">
+									<template name="model" var="sample">
 										<row>
-											<textbox
-												inplace="true" hflex="true"
-												value="@bind(sample.sample.name)" />
-											<detail
-												open="false" fulfill="onOpen">
-												<grid
-													hflex="true" model="@load(sample)">
+											<cell>
+												<textbox inplace="true" hflex="true"
+													value="@bind(sample.sample.name)" />
+												<button label="-" width="30px"
+													onClick="@command('removeSample', condition=condition.condition, sample=sample.sample)" />
+											</cell>
+											<detail open="false" fulfill="onOpen">
+												<grid hflex="true" model="@load(sample)">
 													<columns>
-														<column
-															width="40px">
-															<button
-																label="+" width="30px"
+														<column width="40px">
+															<button label="+" width="30px"
 																onClick="@command('addReplicate', sample=sample.sample)" />
 														</column>
-														<column
-															label="Replicates" />
+														<column label="Replicates" />
 													</columns>
 
 													<rows>
-														<template
-															name="model" var="replicate">
-															<row
-																spans="2">
-																<textbox
-																	inplace="true" hflex="true"
-																	value="@bind(replicate.name)" />
+														<template name="model" var="replicate">
+															<row spans="2">
+																<cell>
+																	<textbox inplace="true" hflex="true"
+																		value="@bind(replicate.name)" />
+																	<button label="-" width="30px"
+																		onClick="@command('removeReplicate', sample=sample.sample, replicate=replicate)" />
+																</cell>
 															</row>
 														</template>
 													</rows>
@@ -118,10 +109,8 @@
 		</grid>
 
 		<hbox pack="end" hflex="true">
-			<button label="Save"
-				onClick="@command('save')" />
-			<button label="Reset"
-				onClick="@command('reset')" />
+			<button label="Save" onClick="@command('save')" />
+			<button label="Reset" onClick="@command('reset')" />
 		</hbox>
 	</vlayout>
 </zk>

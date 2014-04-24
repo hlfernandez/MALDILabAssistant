@@ -9,6 +9,7 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zul.Messagebox;
 
 import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
@@ -56,21 +57,17 @@ public class ExperimentViewModel {
 	public CellNameType[] getCellNameTypes() {
 		return CellNameType.values();
 	}
-	
+
 	private Replicate selectedReplicate;
 	private Sample selectedSample;
-	
-	
-	
+
 	public Sample getSelectedSample() {
 		return selectedSample;
 	}
 
 	@Command("changeSelectedSample")
 	@NotifyChange({ "selectedSample", "selectedReplicate" })
-	public void setSelectedSample(
-		@BindingParam("sample") Sample selectedSample
-	) {
+	public void setSelectedSample(@BindingParam("sample") Sample selectedSample) {
 		this.selectedSample = selectedSample;
 		this.selectedReplicate = null;
 	}
@@ -82,8 +79,7 @@ public class ExperimentViewModel {
 	@Command("changeSelectedReplicate")
 	@NotifyChange({ "selectedSample", "selectedReplicate" })
 	public void setSelectedReplicate(
-		@BindingParam("replicate") Replicate selectedReplicate
-	) {
+			@BindingParam("replicate") Replicate selectedReplicate) {
 		this.selectedSample = null;
 		this.selectedReplicate = selectedReplicate;
 	}
@@ -114,13 +110,15 @@ public class ExperimentViewModel {
 	}
 
 	@Command
+	@NotifyChange({ "model", "experiment" })
 	public void save() {
 		if (experiment.getId() == null) {
 			this.experiment = this.experimentService.add(this.experiment);
 		} else {
 			experimentService.update(experiment);
 		}
-		Executions.sendRedirect("home.zul");
+
+		Messagebox.show("Data has been saved");
 	}
 
 	@Command
@@ -152,6 +150,12 @@ public class ExperimentViewModel {
 	}
 
 	@Command
+	public void removeCondition(
+			@BindingParam("condition") ConditionGroup condition) {
+		this.experiment.removeCondition(condition);
+	}
+
+	@Command
 	public void addSample(@BindingParam("condition") ConditionGroup condition) {
 		final Sample sample = new Sample();
 		sample.setName("Sample" + (condition.getSamples().size() + 1));
@@ -160,10 +164,23 @@ public class ExperimentViewModel {
 	}
 
 	@Command
+	public void removeSample(
+			@BindingParam("condition") ConditionGroup condition,
+			@BindingParam("sample") Sample sample) {
+		condition.removeSample(sample);
+	}
+
+	@Command
 	public void addReplicate(@BindingParam("sample") Sample sample) {
 		final Replicate replicate = new Replicate();
 		replicate.setName("Replicate" + (sample.getReplicates().size() + 1));
 
 		sample.addReplicate(replicate);
+	}
+
+	@Command
+	public void removeReplicate(@BindingParam("sample") Sample sample,
+			@BindingParam("replicate") Replicate replicate) {
+		sample.removeReplicate(replicate);
 	}
 }
