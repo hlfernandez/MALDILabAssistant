@@ -4,11 +4,16 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zss.api.Ranges;
+import org.zkoss.zss.ui.Spreadsheet;
 import org.zkoss.zul.Messagebox;
 
 import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
@@ -20,17 +25,22 @@ import es.uvigo.ei.sing.mla.services.ExperimentService;
 import es.uvigo.ei.sing.mla.util.CellNameType;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
-public class ExperimentViewModel {
+public class ExperimentViewModel extends SelectorComposer<Component> {
+	private static final long serialVersionUID = 1L;
+
 	@WireVariable
 	private ExperimentService experimentService;
 
 	private Experiment experiment;
-	
+
 	private ConditionGroup selectedCondition;
 	private Sample selectedSample;
 	private Replicate selectedReplicate;
-	
+
 	private int plate;
+
+	@Wire
+	private Spreadsheet ss;
 
 	@Init
 	public void init() {
@@ -62,6 +72,14 @@ public class ExperimentViewModel {
 
 	public CellNameType[] getCellNameTypes() {
 		return CellNameType.values();
+	}
+
+	public int getPlate() {
+		return plate;
+	}
+
+	public void setPlate(int plate) {
+		this.plate = plate;
 	}
 
 	public ConditionGroup getSelectedCondition() {
@@ -200,5 +218,93 @@ public class ExperimentViewModel {
 	public void removeReplicate(@BindingParam("sample") Sample sample,
 			@BindingParam("replicate") Replicate replicate) {
 		sample.removeReplicate(replicate);
+	}
+
+	private StringBuilder inflate(CellNameType type, StringBuilder str) {
+		char a = (type == CellNameType.LOWERCASE) ? 'a' : 'A';
+		char z = (type == CellNameType.LOWERCASE) ? 'a' : 'A';
+
+		int end = str.length() - 1;
+
+		if (str.charAt(0) == z) {
+			for (int i = 0; i < str.length(); ++i) {
+				str.setCharAt(i, a);
+			}
+
+			return new StringBuilder(str + Character.toString(a));
+		}
+
+		if (str.charAt(end) == z) {
+			String inflated = inflate(type,
+					new StringBuilder(str.substring(0, end)))
+					+ Character.toString(a);
+
+			return new StringBuilder(inflated);
+		}
+
+		char next = str.charAt(end);
+		++next;
+		str.setCharAt(end, next);
+
+		return str;
+	}
+
+	private String createTitles(CellNameType type, int num) {
+		StringBuilder titles = new StringBuilder();
+
+		switch (type) {
+		case LOWERCASE:
+			char c = 'a';
+			StringBuilder chars = new StringBuilder();
+			chars.append(c);
+
+			for (int i = 1; i <= num; ++i) {
+				chars.setCharAt(chars.length() - 1, c);
+				titles.append(chars + ",");
+
+				if (c == 'z') {
+					chars = inflate(type, chars);
+					c = 'a';
+				} else {
+					++c;
+				}
+			}
+			break;
+		case UPPERCASE:
+			char C = 'A';
+			StringBuilder CHARS = new StringBuilder();
+			CHARS.append(C);
+
+			for (int i = 1; i <= num; ++i) {
+				CHARS.setCharAt(CHARS.length() - 1, C);
+				titles.append(CHARS + ",");
+
+				if (C == 'Z') {
+					chars = inflate(type, CHARS);
+					c = 'A';
+				} else {
+					++C;
+				}
+			}
+			break;
+		default:
+			for (int i = 1; i <= num; ++i) {
+				titles.append(i + ",");
+			}
+		}
+
+		return titles.substring(0, titles.length() - 1);
+	}
+
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+
+		Ranges.range(ss.getSelectedSheet()).protectSheet("password");
+
+		ss.setColumntitles(createTitles(experiment.getColNameType(),
+				experiment.getNumCols()));
+		ss.setRowtitles(createTitles(experiment.getRowNameType(),
+				experiment.getNumRows()));
 	}
 }

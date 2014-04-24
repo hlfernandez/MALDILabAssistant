@@ -69,6 +69,7 @@
 			<tabpanels>
 				<tabpanel>
 					<spreadsheet id="ss" src="/WEB-INF/books/ss.xlsx"
+						apply="es.uvigo.ei.sing.mla.view.models.ExperimentViewModel"
 						hflex="true" vflex="true" maxrows="@load(vm.experiment.numRows)"
 						maxcolumns="@load(vm.experiment.numCols)" columnwidth="25"
 						rowheight="25" />
