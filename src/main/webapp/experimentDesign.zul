@@ -13,7 +13,7 @@
 							<label hflex="true" value="@load(condition.condition.name)" />
 							<checkbox checked="@load(vm.selectedCondition eq condition.condition)"
 								onCheck="@command('changeSelectedCondition', condition=condition.condition)"
-								disabled="@load(condition.isOnPlate)" />
+								disabled="@load(condition.condition.isOnPlate())" />
 						</cell>
 						<detail open="false" fulfill="onOpen">
 							<grid hflex="true" model="@load(condition)">
@@ -30,7 +30,7 @@
 												<checkbox
 													checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
 													onCheck="@command('changeSelectedSample', sample=sample.sample)"
-													disabled="@load(sample.isOnPlate)" />
+													disabled="@load(sample.sample.isOnPlate())" />
 											</cell>
 											<detail open="false" fulfill="onOpen">
 												<grid hflex="true" model="@load(sample)">
@@ -46,7 +46,7 @@
 																	<checkbox
 																		checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample or vm.selectedCondition eq replicate.sample.condition)"
 																		onCheck="@command('changeSelectedReplicate', replicate=replicate)"
-																		disabled="@load(replicate.isOnPlate)" />
+																		disabled="@load(replicate.isOnPlate())" />
 																</cell>
 															</row>
 														</template>
