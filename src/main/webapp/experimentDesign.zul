@@ -1,78 +1,66 @@
 <zk>
-		<hlayout>
-			<grid width="240px"
-				model="@load(vm.model)">
-				<columns>
-					<column width="40px" />
-					<column label="Conditions" />
-				</columns>
-				<rows>
-					<template name="model"
-						var="condition">
-						<row>
-							<cell>
-								<colorbox
-									value="@bind(condition.condition.color)" />
-								<label hflex="true"
-									value="@load(condition.condition.name)" />
-							</cell>
-							<detail open="false"
-								fulfill="onOpen">
-								<grid hflex="true"
-									model="@load(condition)">
-									<columns>
-										<column
-											width="40px" />
-										<column
-											label="Samples" />
-									</columns>
-									<rows>
-										<template
-											name="model" var="sample">
-											<row>
-												<cell>
-													<colorbox
-														value="@bind(sample.sample.color)" />
-													<label hflex="true" value="@load(sample.sample.name)" />
-													<checkbox checked="@load(vm.selectedSample eq sample.sample)" 
-													onCheck="@command('changeSelectedSample', sample=sample.sample)"/>
-												</cell>
-												<detail
-													open="false" fulfill="onOpen">
-													<grid hflex="true" model="@load(sample)">
-														<columns>
-															<column
-																label="Replicates" />
-														</columns>
-														<rows>
-															<template
-																name="model" var="replicate">
-																<row>
-																	<cell>
-																		<colorbox value="@bind(replicate.color)" />
-																		<label hflex="true" value="@load(replicate.name)"/>
-																		<checkbox checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample)" 
-																		onCheck="@command('changeSelectedReplicate', replicate=replicate)"/>
-																	</cell>
-																</row>
-															</template>
-														</rows>
-													</grid>
-												</detail>
-											</row>
-										</template>
-									</rows>
-								</grid>
-							</detail>
-						</row>
-					</template>
-				</rows>
-			</grid>
-			<spreadsheet id="ss"
-				src="/WEB-INF/books/ss.xlsx" width="720px" height="720px"
-				maxrows="@load(vm.experiment.numRows)"
-				maxcolumns="@load(vm.experiment.numCols)"
-				columnwidth="25" rowheight="25"
-			/>
-		</hlayout>
+	<hlayout>
+		<grid width="240px" model="@load(vm.model)">
+			<columns>
+				<column width="40px" />
+				<column label="Conditions" />
+			</columns>
+			<rows>
+				<template name="model" var="condition">
+					<row>
+						<cell>
+							<colorbox value="@bind(condition.condition.color)" />
+							<label hflex="true" value="@load(condition.condition.name)" />
+							<checkbox checked="@load(vm.selectedCondition eq condition.condition)"
+								onCheck="@command('changeSelectedCondition', condition=condition.condition)" />
+						</cell>
+						<detail open="false" fulfill="onOpen">
+							<grid hflex="true" model="@load(condition)">
+								<columns>
+									<column width="40px" />
+									<column label="Samples" />
+								</columns>
+								<rows>
+									<template name="model" var="sample">
+										<row>
+											<cell>
+												<colorbox value="@bind(sample.sample.color)" />
+												<label hflex="true" value="@load(sample.sample.name)" />
+												<checkbox
+													checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
+													onCheck="@command('changeSelectedSample', sample=sample.sample)" />
+											</cell>
+											<detail open="false" fulfill="onOpen">
+												<grid hflex="true" model="@load(sample)">
+													<columns>
+														<column label="Replicates" />
+													</columns>
+													<rows>
+														<template name="model" var="replicate">
+															<row>
+																<cell>
+																	<colorbox value="@bind(replicate.color)" />
+																	<label hflex="true" value="@load(replicate.name)" />
+																	<checkbox
+																		checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample or vm.selectedCondition eq replicate.sample.condition)"
+																		onCheck="@command('changeSelectedReplicate', replicate=replicate)" />
+																</cell>
+															</row>
+														</template>
+													</rows>
+												</grid>
+											</detail>
+										</row>
+									</template>
+								</rows>
+							</grid>
+						</detail>
+					</row>
+				</template>
+			</rows>
+		</grid>
+		<spreadsheet id="ss" src="/WEB-INF/books/ss.xlsx" width="720px"
+			height="720px" maxrows="@load(vm.experiment.numRows)" maxcolumns="@load(vm.experiment.numCols)"
+			columnwidth="25" rowheight="25" />
+	</hlayout>
 </zk>

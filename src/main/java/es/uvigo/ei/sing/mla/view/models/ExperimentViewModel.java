@@ -58,16 +58,31 @@ public class ExperimentViewModel {
 		return CellNameType.values();
 	}
 
-	private Replicate selectedReplicate;
+	private ConditionGroup selectedCondition;
 	private Sample selectedSample;
+	private Replicate selectedReplicate;
+
+	public ConditionGroup getSelectedCondition() {
+		return selectedCondition;
+	}
+
+	@Command("changeSelectedCondition")
+	@NotifyChange({ "selectedCondition", "selectedSample", "selectedReplicate" })
+	public void setSelectedCondition(
+			@BindingParam("condition") ConditionGroup selectedCondition) {
+		this.selectedCondition = selectedCondition;
+		this.selectedSample = null;
+		this.selectedReplicate = null;
+	}
 
 	public Sample getSelectedSample() {
 		return selectedSample;
 	}
 
 	@Command("changeSelectedSample")
-	@NotifyChange({ "selectedSample", "selectedReplicate" })
+	@NotifyChange({ "selectedCondition", "selectedSample", "selectedReplicate" })
 	public void setSelectedSample(@BindingParam("sample") Sample selectedSample) {
+		this.selectedCondition = null;
 		this.selectedSample = selectedSample;
 		this.selectedReplicate = null;
 	}
@@ -77,9 +92,10 @@ public class ExperimentViewModel {
 	}
 
 	@Command("changeSelectedReplicate")
-	@NotifyChange({ "selectedSample", "selectedReplicate" })
+	@NotifyChange({ "selectedCondition", "selectedSample", "selectedReplicate" })
 	public void setSelectedReplicate(
 			@BindingParam("replicate") Replicate selectedReplicate) {
+		this.selectedCondition = null;
 		this.selectedSample = null;
 		this.selectedReplicate = selectedReplicate;
 	}
