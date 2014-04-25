@@ -12,7 +12,7 @@ import es.uvigo.ei.sing.mla.util.CellNameType;
 @ComponentAnnotation({ "plateId:@ZKBIND(ACCESS=both)", "experiment:@ZKBIND(ACCESS=both)" })
 public class PlateEditor extends Spreadsheet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int plateId;
 	private Experiment experiment;
 
@@ -22,10 +22,10 @@ public class PlateEditor extends Spreadsheet {
 
 	public void setExperiment(Experiment experiment) {
 		this.experiment = experiment;
-		
+
 		this.setMaxVisibleColumns(this.experiment.getNumCols());
 		this.setMaxVisibleRows(this.experiment.getNumRows());
-		
+
 		this.updateLabels();
 	}
 
@@ -36,18 +36,18 @@ public class PlateEditor extends Spreadsheet {
 	public void setPlateId(int plateId) {
 		this.plateId = plateId;
 	}
-	
+
 	private void updateLabels() {
 		Ranges.range(this.getSelectedSheet()).protectSheet("password");
-		
+
 		this.setColumntitles(createTitles(
-			experiment.getColNameType(),
-			experiment.getNumCols())
-		);
+				experiment.getColNameType(),
+				experiment.getNumCols())
+				);
 		this.setRowtitles(createTitles(
-			experiment.getRowNameType(),
-			experiment.getNumRows())
-		);
+				experiment.getRowNameType(),
+				experiment.getNumRows())
+				);
 	}
 
 	private StringBuilder inflate(CellNameType type, StringBuilder str) {
@@ -110,8 +110,8 @@ public class PlateEditor extends Spreadsheet {
 				titles.append(CHARS + ",");
 
 				if (C == 'Z') {
-					chars = inflate(type, CHARS);
-					c = 'A';
+					CHARS = inflate(type, CHARS);
+					C = 'A';
 				} else {
 					++C;
 				}
