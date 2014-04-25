@@ -94,6 +94,10 @@ public class Sample extends Observable {
 	public void setColor(String color) {
 		this.color = color;
 	}
+	
+	public int countReplicates() {
+		return this.getReplicates().size();
+	}
 
 	public boolean addReplicate(Replicate replicate) {
 		Objects.requireNonNull(replicate, "replicate can't be null");

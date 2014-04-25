@@ -147,6 +147,16 @@ public class Experiment extends Observable {
 		return this.user;
 	}
 	
+	public int countReplicates() {
+		int count = 0;
+		
+		for (ConditionGroup condition : this.getConditions()) {
+			count += condition.countReplicates();
+		}
+		
+		return count;
+	}
+	
 	public void setUser(User user) {
 		if (this.user != null) {
 			this.user._removeExperiment(this);

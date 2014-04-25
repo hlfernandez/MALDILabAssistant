@@ -1,3 +1,4 @@
+<?component name="plateeditor" class="es.uvigo.ei.sing.mla.view.components.PlateEditor"?>
 <zk>
 	<hlayout>
 		<grid width="240px" model="@load(vm.model)">
@@ -29,7 +30,7 @@
 												<label hflex="true" value="@load(sample.sample.name)" />
 												<checkbox
 													checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
-													onCheck="@command('changeSelectedSample', sample=sample.sample)"
+													onCheck="@command('changeSelectedSample', sample=sample.sample) @global-command('onSampleSelected', sample=sample.sample)"
 													disabled="@load(sample.sample.isOnPlate())" />
 											</cell>
 											<detail open="false" fulfill="onOpen">
@@ -63,17 +64,20 @@
 			</rows>
 		</grid>
 		<tabbox width="720px" height="720px">
-			<tabs>
-				<tab label="Plate 1" />
+			<tabs children="@load(vm.plateNames)">
+				<template name="children" var="plateName">
+					<tab label="@load(plateName)" />
+				</template>
 			</tabs>
-			<tabpanels>
-				<tabpanel>
-					<spreadsheet id="ss" src="/WEB-INF/books/ss.xlsx"
-						apply="es.uvigo.ei.sing.mla.view.models.ExperimentViewModel"
-						hflex="true" vflex="true" maxrows="@load(vm.experiment.numRows)"
-						maxcolumns="@load(vm.experiment.numCols)" columnwidth="25"
-						rowheight="25" />
-				</tabpanel>
+			<tabpanels children="@load(vm.plateIds)">
+				<template name="children" var="plateId">
+					<tabpanel>
+						<plateeditor src="/WEB-INF/books/ss.xlsx" plateId="@load(plateId)" experiment="@load(vm.experiment)"
+							hflex="true" vflex="true" columnwidth="25" rowheight="25"
+							apply="es.uvigo.ei.sing.mla.view.models.PlateEditorComposer"
+						/>
+					</tabpanel>
+				</template>
 			</tabpanels>
 		</tabbox>
 	</hlayout>

@@ -90,6 +90,16 @@ public class ConditionGroup extends Observable {
 	public void setColor(String color) {
 		this.color = color;
 	}
+	
+	public int countReplicates() {
+		int count = 0;
+		
+		for (Sample sample : this.getSamples()) {
+			count += sample.countReplicates();
+		}
+		
+		return count;
+	}
 
 	public boolean addSample(Sample sample) {
 		Objects.requireNonNull(sample, "sample can't be null");

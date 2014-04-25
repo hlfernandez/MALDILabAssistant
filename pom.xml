@@ -7,6 +7,7 @@
 	<properties>
 		<zk.version>7.0.1</zk.version>
 		<zss.version>3.5.0.FL.20140422</zss.version>
+		<zkcomposite.version>0.8.0</zkcomposite.version>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<hibernate.version>4.0.0.Final</hibernate.version>
 		<commons-io>1.3.1</commons-io>
@@ -68,6 +69,11 @@
 			<groupId>org.zkoss.zss</groupId>
 			<artifactId>zssex</artifactId>
 			<version>${zss.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.zkoss.composite</groupId>
+			<artifactId>zkcomposite</artifactId>
+			<version>${zkcomposite.version}</version>
 		</dependency>
 
 		<dependency>

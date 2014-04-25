@@ -6,6 +6,7 @@
 			<vbox hflex="true" align="left">
 				<window title="Experiment" border="normal" closable="true"
 					apply="org.zkoss.bind.BindComposer"
+					binder="@init(queueName='experiment')"
 					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')"
 					onClose="@command('cancel')">
 					<tabbox>
