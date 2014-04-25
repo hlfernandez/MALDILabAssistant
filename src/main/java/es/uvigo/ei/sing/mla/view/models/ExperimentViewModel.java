@@ -126,26 +126,6 @@ public class ExperimentViewModel extends SelectorComposer<Component> {
 	}
 
 	@Command
-	public void toTab0() {
-		if (experiment.getId() == null) {
-			Executions.getCurrent().sendRedirect("experimentData.zul");
-		} else {
-			Executions.getCurrent().sendRedirect(
-					"experimentData.zul?id=" + experiment.getId());
-		}
-	}
-
-	@Command
-	public void toTab1() {
-		if (experiment.getId() == null) {
-			Executions.getCurrent().sendRedirect("experimentDesign.zul");
-		} else {
-			Executions.getCurrent().sendRedirect(
-					"experimentDesign.zul?id=" + experiment.getId());
-		}
-	}
-
-	@Command
 	@NotifyChange({ "model", "experiment" })
 	public void save() {
 		if (experiment.getId() == null) {
@@ -222,7 +202,7 @@ public class ExperimentViewModel extends SelectorComposer<Component> {
 
 	private StringBuilder inflate(CellNameType type, StringBuilder str) {
 		char a = (type == CellNameType.LOWERCASE) ? 'a' : 'A';
-		char z = (type == CellNameType.LOWERCASE) ? 'a' : 'A';
+		char z = (type == CellNameType.LOWERCASE) ? 'z' : 'Z';
 
 		int end = str.length() - 1;
 
@@ -301,10 +281,10 @@ public class ExperimentViewModel extends SelectorComposer<Component> {
 		super.doAfterCompose(comp);
 
 		Ranges.range(ss.getSelectedSheet()).protectSheet("password");
-
-		ss.setColumntitles(createTitles(experiment.getColNameType(),
-				experiment.getNumCols()));
-		ss.setRowtitles(createTitles(experiment.getRowNameType(),
-				experiment.getNumRows()));
+//	EXPERIMENT IS NULL
+//		ss.setColumntitles(createTitles(experiment.getColNameType(),
+//				experiment.getNumCols()));
+//		ss.setRowtitles(createTitles(experiment.getRowNameType(),
+//				experiment.getNumRows()));
 	}
 }
