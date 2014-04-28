@@ -87,6 +87,16 @@ public class Experiment extends Observable {
 		this.name = name;
 	}
 
+	public boolean isOnPlate() {
+		for (ConditionGroup condition : conditions) {
+			if (!condition.isOnPlate()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -142,21 +152,21 @@ public class Experiment extends Observable {
 	public void setColNameType(CellNameType colNameType) {
 		this.colNameType = colNameType;
 	}
-	
+
 	public User getUser() {
 		return this.user;
 	}
-	
+
 	public int countReplicates() {
 		int count = 0;
-		
+
 		for (ConditionGroup condition : this.getConditions()) {
 			count += condition.countReplicates();
 		}
-		
+
 		return count;
 	}
-	
+
 	public void setUser(User user) {
 		if (this.user != null) {
 			this.user._removeExperiment(this);
@@ -173,34 +183,46 @@ public class Experiment extends Observable {
 		return Collections.unmodifiableList(conditions);
 	}
 
+	public List<Replicate> getReplicates() {
+		List<Replicate> replicates = new ArrayList<Replicate>();
+
+		for (ConditionGroup condition : this.conditions) {
+			for (Sample sample : condition.getSamples()) {
+				replicates.addAll(sample.getReplicates());
+			}
+		}
+
+		return replicates;
+	}
+
 	public void addCondition(ConditionGroup condition) {
 		Objects.requireNonNull(condition, "condition can't be null");
-		
+
 		condition.setExperiment(this);
 	}
 
 	public boolean removeCondition(ConditionGroup condition) {
 		Objects.requireNonNull(condition, "condition can't be null");
-		
+
 		if (this.conditions.contains(condition)) {
 			condition.setExperiment(null);
-			
+
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	void _addCondition(ConditionGroup conditionGroup) {
 		this.conditions.add(conditionGroup);
-		
+
 		this.setChanged();
 		this.notifyObservers(conditionGroup);
 	}
-	
+
 	void _removeCondition(ConditionGroup conditionGroup) {
 		this.conditions.remove(conditionGroup);
-		
+
 		this.setChanged();
 		this.notifyObservers(conditionGroup);
 	}

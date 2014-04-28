@@ -17,7 +17,7 @@ public class Replicate {
 	@Column(length = 32)
 	private String name;
 
-	private int plate = 0;
+	private int plateId = 0;
 	private int col = 0;
 	private int row = 0;
 
@@ -48,17 +48,17 @@ public class Replicate {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public int getPlate() {
-		return plate;
+
+	public int getPlateId() {
+		return plateId;
 	}
 
-	public void setPlate(int plate) {
-		this.plate = plate;
+	public void setPlateId(int plateId) {
+		this.plateId = plateId;
 	}
-	
+
 	public boolean isOnPlate() {
-		return plate > 0;
+		return plateId > 0;
 	}
 
 	public int getCol() {
