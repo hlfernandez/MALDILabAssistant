@@ -2,14 +2,21 @@ package es.uvigo.ei.sing.mla.view.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.GlobalCommandEvent;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Messagebox;
@@ -33,6 +40,28 @@ public class ExperimentViewModel {
 	private Sample selectedSample;
 	private Replicate selectedReplicate;
 
+	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
+		@Override
+		public void onEvent(Event evt) {
+			if (evt instanceof GlobalCommandEvent) {
+				final GlobalCommandEvent globalEvent = (GlobalCommandEvent) evt;
+				final Map<String, Object> args = globalEvent.getArgs();
+				
+				switch (globalEvent.getCommand()) {
+				case "selectedReplicatePlaced":
+					ExperimentViewModel.this.selectedReplicatePlaced((Replicate) args.get("replicate"));
+					break;
+//					case "onSampleSelected":
+//						this.selectedSample = (Sample) args.get("sample");
+//						break;
+//					case "onConditionSelected":
+//						this.selectedCondition = (ConditionGroup) args.get("condition");
+//						break;
+				}
+			}
+		}
+	};
+
 	@Init
 	public void init() {
 		final Session session = Sessions.getCurrent();
@@ -48,9 +77,23 @@ public class ExperimentViewModel {
 			this.experiment = experimentService.get(id);
 		} else {
 			this.experiment = new Experiment();
-			this.experiment.setUser((User) Sessions.getCurrent().getAttribute(
-					"user"));
+			this.experiment.setUser((User) Sessions.getCurrent().getAttribute("user"));
 		}
+		
+		EventQueues.lookup("experiment", true).subscribe(this.globalCommandListener);
+	}
+	
+	@GlobalCommand("selectedReplicatePlaced")
+	public void selectedReplicatePlaced(
+		@BindingParam("replicate") Replicate replicate
+	) {
+		if (this.selectedReplicate == replicate) {
+			BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
+		}
+	}
+	
+	public boolean isMetadataCompleted() {
+		return this.experiment.isMetadataComplete();
 	}
 
 	public ExperimentListModel getModel() {
@@ -80,7 +123,7 @@ public class ExperimentViewModel {
 		final int rows = this.experiment.getNumRows();
 		final int replicates = this.experiment.countReplicates();
 		
-		final int numPlates = (int) Math.ceil((double) replicates / (cols * rows));
+		final int numPlates = (int) Math.ceil((double) replicates / (double) (cols * rows));
 		
 		final List<Integer> plateIds = new ArrayList<>(numPlates);
 		for (int i = 1; i <= numPlates; i++) {
@@ -89,7 +132,7 @@ public class ExperimentViewModel {
 		
 		return plateIds;
 	}
-
+	
 	public ConditionGroup getSelectedCondition() {
 		return selectedCondition;
 	}
@@ -133,7 +176,7 @@ public class ExperimentViewModel {
 	}
 
 	@Command
-	@NotifyChange({ "model", "experiment", "plateNames" })
+	@NotifyChange({ "model", "experiment", "plateNames", "metadataCompleted" })
 	public void save() {
 		if (experiment.getId() == null) {
 			this.experiment = this.experimentService.add(this.experiment);
@@ -153,6 +196,12 @@ public class ExperimentViewModel {
 			this.experiment = experimentService.reload(this.experiment);
 		}
 	}
+	
+	@Command
+	public void exit() {
+		EventQueues.lookup("experiment", true).unsubscribe(this.globalCommandListener);
+		this.cancel();
+	}
 
 	@Command
 	public void cancel() {
@@ -166,15 +215,15 @@ public class ExperimentViewModel {
 	@Command
 	public void addCondition() {
 		final ConditionGroup condition = new ConditionGroup();
-		condition.setName("Condition"
-				+ (this.experiment.getConditions().size() + 1));
+		condition.setName("Condition" + (this.experiment.getConditions().size() + 1));
 
 		this.experiment.addCondition(condition);
 	}
 
 	@Command
 	public void removeCondition(
-			@BindingParam("condition") ConditionGroup condition) {
+		@BindingParam("condition") ConditionGroup condition
+	) {
 		this.experiment.removeCondition(condition);
 	}
 
@@ -188,8 +237,9 @@ public class ExperimentViewModel {
 
 	@Command
 	public void removeSample(
-			@BindingParam("condition") ConditionGroup condition,
-			@BindingParam("sample") Sample sample) {
+		@BindingParam("condition") ConditionGroup condition,
+		@BindingParam("sample") Sample sample
+	) {
 		condition.removeSample(sample);
 	}
 
@@ -202,8 +252,10 @@ public class ExperimentViewModel {
 	}
 
 	@Command
-	public void removeReplicate(@BindingParam("sample") Sample sample,
-			@BindingParam("replicate") Replicate replicate) {
+	public void removeReplicate(
+		@BindingParam("sample") Sample sample,
+		@BindingParam("replicate") Replicate replicate
+	) {
 		sample.removeReplicate(replicate);
 	}
 }

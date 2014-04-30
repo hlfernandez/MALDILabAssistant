@@ -1,7 +1,24 @@
 <?component name="plateeditor" class="es.uvigo.ei.sing.mla.view.components.PlateEditor"?>
 <zk>
+	<style>
+        .odd-condition {
+            background-color: #177FBF !important;
+            color: white;
+        }
+        .odd-condition:hover {
+            color: black;
+        }
+        .even-condition {
+            background-color: #3D8EBF;
+            color: white;
+        }
+        .even-condition:hover {
+            color: black;
+        }
+    </style>
+    <!-- Sample: 66D8F2, 96E1F2 - Replicate: 99F2F8, CBF5F8 -->
 	<hlayout>
-		<grid width="240px" model="@load(vm.model)">
+		<grid width="240px" model="@load(vm.model)" oddRowSclass="odd-condition" sclass="even-condition">
 			<columns>
 				<column width="40px" />
 				<column label="Conditions" />
@@ -10,8 +27,7 @@
 				<template name="model" var="condition">
 					<row>
 						<cell>
-							<colorbox value="@bind(condition.condition.color)" />
-							<label hflex="true" value="@load(condition.condition.name)" />
+							<label hflex="true" value="@load(condition.condition.name)" sclass="background-color: #177FBF"/>
 							<checkbox checked="@load(vm.selectedCondition eq condition.condition)"
 								onCheck="@command('changeSelectedCondition', condition=condition.condition)"
 								disabled="@load(condition.condition.isOnPlate())" />
@@ -26,7 +42,6 @@
 									<template name="model" var="sample">
 										<row>
 											<cell>
-												<colorbox value="@bind(sample.sample.color)" />
 												<label hflex="true" value="@load(sample.sample.name)" />
 												<checkbox
 													checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
@@ -36,19 +51,16 @@
 											<detail open="false" fulfill="onOpen">
 												<grid hflex="true" model="@load(sample)">
 													<columns>
-														<column width="40px" />
 														<column label="Replicates" />
 													</columns>
 													<rows>
 														<template name="model" var="replicate">
 															<row>
-																<cell />
 																<cell>
-																	<colorbox value="@bind(replicate.color)" />
 																	<label hflex="true" value="@load(replicate.name)" />
 																	<checkbox
 																		checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample or vm.selectedCondition eq replicate.sample.condition)"
-																		onCheck="@command('changeSelectedReplicate', replicate=replicate) @global-command('onReplicateSelected', replicate=replicate)"
+																		onCheck="@command('changeSelectedReplicate', replicate=replicate)"
 																		disabled="@load(replicate.isOnPlate())" />
 																</cell>
 															</row>
@@ -74,10 +86,16 @@
 			<tabpanels children="@load(vm.plateIds)">
 				<template name="children" var="plateId">
 					<tabpanel>
-						<plateeditor src="/WEB-INF/books/ss.xlsx" plateId="@load(plateId)"
-							experiment="@load(vm.experiment)" hflex="true" vflex="true"
+						<plateeditor src="/WEB-INF/books/ss.xlsx" 
+							plateId="@load(plateId)"
+							experiment="@load(vm.experiment)"
+							selectedCondition="@load(vm.selectedCondition)" 
+							selectedSample="@load(vm.selectedSample)" 
+							selectedReplicate="@load(vm.selectedReplicate)" 
+							hflex="true" vflex="true"
 							columnwidth="25" rowheight="25"
-							apply="es.uvigo.ei.sing.mla.view.models.PlateEditorComposer" />
+							apply="es.uvigo.ei.sing.mla.view.models.PlateEditorComposer"
+							/>
 					</tabpanel>
 				</template>
 			</tabpanels>

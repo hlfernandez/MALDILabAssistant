@@ -3,6 +3,7 @@ package es.uvigo.ei.sing.mla.model.entities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
@@ -96,7 +97,28 @@ public class Experiment extends Observable {
 
 		return true;
 	}
-
+	
+	public boolean isMetadataComplete() {
+		return this.getNumRows() > 0 && this.getNumCols() > 0 && 
+			!this.getConditions().isEmpty() && 
+			this.eachSampleHasReplicates();
+	}
+	
+	private boolean eachSampleHasReplicates() {
+		for (ConditionGroup condition : this.getConditions()) {
+			if (condition.getSamples().isEmpty()) {
+				return false;
+			} else {
+				for (Sample sample : condition.getSamples()) {
+					if (sample.getReplicates().isEmpty())
+						return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -189,6 +211,21 @@ public class Experiment extends Observable {
 		for (ConditionGroup condition : this.conditions) {
 			for (Sample sample : condition.getSamples()) {
 				replicates.addAll(sample.getReplicates());
+			}
+		}
+
+		return replicates;
+	}
+
+	public List<Replicate> getReplicates(int plateId) {
+		List<Replicate> replicates = new ArrayList<Replicate>();
+
+		for (ConditionGroup condition : this.conditions) {
+			for (Sample sample : condition.getSamples()) {
+				for (Replicate replicate : sample.getReplicates()) {
+					if (replicate.getPlateId() == plateId)
+						replicates.add(replicate);
+				}
 			}
 		}
 

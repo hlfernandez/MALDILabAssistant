@@ -2,19 +2,35 @@ package es.uvigo.ei.sing.mla.view.components;
 
 import org.zkoss.composite.Composite;
 import org.zkoss.zk.ui.annotation.ComponentAnnotation;
+import org.zkoss.zss.api.Range;
 import org.zkoss.zss.api.Ranges;
+import org.zkoss.zss.api.model.CellStyle;
+import org.zkoss.zss.api.model.CellStyle.FillPattern;
+import org.zkoss.zss.api.model.EditableCellStyle;
 import org.zkoss.zss.ui.Spreadsheet;
 
+import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
+import es.uvigo.ei.sing.mla.model.entities.Replicate;
+import es.uvigo.ei.sing.mla.model.entities.Sample;
 import es.uvigo.ei.sing.mla.util.CellNameType;
 
 @Composite(name="plateeditor")
-@ComponentAnnotation({ "plateId:@ZKBIND(ACCESS=both)", "experiment:@ZKBIND(ACCESS=both)" })
+@ComponentAnnotation({ 
+	"plateId:@ZKBIND(ACCESS=both)", 
+	"experiment:@ZKBIND(ACCESS=both)",
+	"selectedCondition:@ZKBIND(ACCESS=both)",
+	"selectedSample:@ZKBIND(ACCESS=both)",
+	"selectedReplicate:@ZKBIND(ACCESS=both)"
+})
 public class PlateEditor extends Spreadsheet {
 	private static final long serialVersionUID = 1L;
 
-	private int plateId;
+	private Integer plateId = null;
 	private Experiment experiment;
+	private ConditionGroup selectedCondition;
+	private Sample selectedSample;
+	private Replicate selectedReplicate;
 
 	public Experiment getExperiment() {
 		return experiment;
@@ -27,27 +43,76 @@ public class PlateEditor extends Spreadsheet {
 		this.setMaxVisibleRows(this.experiment.getNumRows());
 
 		this.updateLabels();
+		this.updateHighlightedCells();
 	}
 
-	public int getPlateId() {
+	public Integer getPlateId() {
 		return plateId;
 	}
 
-	public void setPlateId(int plateId) {
+	public void setPlateId(Integer plateId) {
 		this.plateId = plateId;
+		this.updateHighlightedCells();
+	}
+	
+	public ConditionGroup getSelectedCondition() {
+		return selectedCondition;
+	}
+
+	public void setSelectedCondition(ConditionGroup selectedCondition) {
+		this.selectedCondition = selectedCondition;
+	}
+
+	public Sample getSelectedSample() {
+		return selectedSample;
+	}
+
+	public void setSelectedSample(Sample selectedSample) {
+		this.selectedSample = selectedSample;
+	}
+
+	public Replicate getSelectedReplicate() {
+		return selectedReplicate;
+	}
+
+	public void setSelectedReplicate(Replicate selectedReplicate) {
+		this.selectedReplicate = selectedReplicate;
 	}
 
 	private void updateLabels() {
 		Ranges.range(this.getSelectedSheet()).protectSheet("password");
 
 		this.setColumntitles(createTitles(
-				experiment.getColNameType(),
-				experiment.getNumCols())
-				);
+			experiment.getColNameType(),
+			experiment.getNumCols())
+		);
 		this.setRowtitles(createTitles(
-				experiment.getRowNameType(),
-				experiment.getNumRows())
-				);
+			experiment.getRowNameType(),
+			experiment.getNumRows())
+		);
+	}
+	
+	public void updateHighlightedCells() {
+		if (this.experiment == null || this.plateId == null) {
+			// Clean plate highlights
+		} else {
+			for (Replicate replicate : this.experiment.getReplicates(this.plateId)) {
+				highlightCells(replicate.getRow(), replicate.getCol(), replicate.getColor());
+			}
+		}
+	}
+
+	private void highlightCells(int row, int col, String color) {
+		Range selection = Ranges.range(
+			this.getSelectedSheet(), row, col
+		);
+		CellStyle oldStyle = selection.getCellStyle();
+		EditableCellStyle newStyle = selection.getCellStyleHelper()
+				.createCellStyle(oldStyle);
+		newStyle.setFillColor(selection.getCellStyleHelper()
+				.createColorFromHtmlColor(color == null ? "#000000" : color));
+		newStyle.setFillPattern(FillPattern.SOLID_FOREGROUND);
+		selection.setCellStyle(newStyle);
 	}
 
 	private StringBuilder inflate(CellNameType type, StringBuilder str) {

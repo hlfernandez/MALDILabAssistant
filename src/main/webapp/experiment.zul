@@ -8,11 +8,11 @@
 					apply="org.zkoss.bind.BindComposer"
 					binder="@init(queueName='experiment')"
 					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')"
-					onClose="@command('cancel')">
+					onClose="@command('exit')">
 					<tabbox>
 						<tabs>
 							<tab label="Data" />
-							<tab label="Design" />
+							<tab label="Design" visible="@load(vm.metadataCompleted)"/>
 						</tabs>
 						<tabpanels>
 							<tabpanel>
