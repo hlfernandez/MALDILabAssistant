@@ -32,9 +32,6 @@ public class Sample extends Observable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sample", cascade = CascadeType.ALL)
 	private List<Replicate> replicates;
 
-	@Column(length = 10)
-	private String color;
-
 	public Sample() {
 		this.name = "";
 		this.condition = null;
@@ -87,14 +84,6 @@ public class Sample extends Observable {
 		return Collections.unmodifiableList(this.replicates);
 	}
 
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-	
 	public int countReplicates() {
 		return this.getReplicates().size();
 	}

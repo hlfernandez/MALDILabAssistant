@@ -48,6 +48,9 @@
 				<template name="model" var="condition">
 					<row>
 						<cell>
+							<colorbox color="@bind(condition.condition.color)"
+								width="25px" height="25px" />
+
 							<textbox inplace="true" hflex="true"
 								value="@bind(condition.condition.name)" />
 							<button label="-" width="30px"

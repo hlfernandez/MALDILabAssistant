@@ -15,14 +15,12 @@ import es.uvigo.ei.sing.mla.model.entities.Replicate;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 import es.uvigo.ei.sing.mla.util.CellNameType;
 
-@Composite(name="plateeditor")
-@ComponentAnnotation({ 
-	"plateId:@ZKBIND(ACCESS=both)", 
-	"experiment:@ZKBIND(ACCESS=both)",
-	"selectedCondition:@ZKBIND(ACCESS=both)",
-	"selectedSample:@ZKBIND(ACCESS=both)",
-	"selectedReplicate:@ZKBIND(ACCESS=both)"
-})
+@Composite(name = "plateeditor")
+@ComponentAnnotation({ "plateId:@ZKBIND(ACCESS=both)",
+		"experiment:@ZKBIND(ACCESS=both)",
+		"selectedCondition:@ZKBIND(ACCESS=both)",
+		"selectedSample:@ZKBIND(ACCESS=both)",
+		"selectedReplicate:@ZKBIND(ACCESS=both)" })
 public class PlateEditor extends Spreadsheet {
 	private static final long serialVersionUID = 1L;
 
@@ -54,7 +52,7 @@ public class PlateEditor extends Spreadsheet {
 		this.plateId = plateId;
 		this.updateHighlightedCells();
 	}
-	
+
 	public ConditionGroup getSelectedCondition() {
 		return selectedCondition;
 	}
@@ -82,30 +80,26 @@ public class PlateEditor extends Spreadsheet {
 	private void updateLabels() {
 		Ranges.range(this.getSelectedSheet()).protectSheet("password");
 
-		this.setColumntitles(createTitles(
-			experiment.getColNameType(),
-			experiment.getNumCols())
-		);
-		this.setRowtitles(createTitles(
-			experiment.getRowNameType(),
-			experiment.getNumRows())
-		);
+		this.setColumntitles(createTitles(experiment.getColNameType(),
+				experiment.getNumCols()));
+		this.setRowtitles(createTitles(experiment.getRowNameType(),
+				experiment.getNumRows()));
 	}
-	
+
 	public void updateHighlightedCells() {
 		if (this.experiment == null || this.plateId == null) {
 			// Clean plate highlights
 		} else {
-			for (Replicate replicate : this.experiment.getReplicates(this.plateId)) {
-				highlightCells(replicate.getRow(), replicate.getCol(), replicate.getColor());
+			for (Replicate replicate : this.experiment
+					.getReplicates(this.plateId)) {
+				highlightCells(replicate.getRow(), replicate.getCol(),
+						replicate.getSample().getCondition().getColor());
 			}
 		}
 	}
 
 	private void highlightCells(int row, int col, String color) {
-		Range selection = Ranges.range(
-			this.getSelectedSheet(), row, col
-		);
+		Range selection = Ranges.range(this.getSelectedSheet(), row, col);
 		CellStyle oldStyle = selection.getCellStyle();
 		EditableCellStyle newStyle = selection.getCellStyleHelper()
 				.createCellStyle(oldStyle);

@@ -16,26 +16,22 @@ public class PlateEditorComposer extends SelectorComposer<PlateEditor> {
 	private static final long serialVersionUID = 1L;
 
 	@Listen("onCellClick = plateeditor")
-	public void onCellClick(CellMouseEvent event) throws DesktopUnavailableException, InterruptedException {
-		final Replicate selectedReplicate = this.getSelf().getSelectedReplicate();
-		
+	public void onCellClick(CellMouseEvent event)
+			throws DesktopUnavailableException, InterruptedException {
+		final Replicate selectedReplicate = this.getSelf()
+				.getSelectedReplicate();
+
 		if (selectedReplicate != null) {
-			if (selectedReplicate.getColor() == null) {
-				selectedReplicate.setColor("#000000");
-			}
 
 			selectedReplicate.setPlateId(getSelf().getPlateId());
 			selectedReplicate.setCol(event.getColumn());
 			selectedReplicate.setRow(event.getRow());
-			
+
 			this.getSelf().updateHighlightedCells();
-			
-			BindUtils.postGlobalCommand(
-				"experiment", 
-				EventQueues.DESKTOP, 
-				"selectedReplicatePlaced", 
-				Collections.singletonMap("replicate", (Object) selectedReplicate)
-			);
+
+			BindUtils.postGlobalCommand("experiment", EventQueues.DESKTOP,
+					"selectedReplicatePlaced", Collections.singletonMap(
+							"replicate", (Object) selectedReplicate));
 		}
 	}
 }

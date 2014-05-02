@@ -25,9 +25,6 @@ public class Replicate {
 	@JoinColumn(name = "sampleId")
 	private Sample sample;
 
-	@Column(length = 10)
-	private String color;
-
 	public Replicate() {
 		this.name = "";
 		this.sample = null;
@@ -91,13 +88,5 @@ public class Replicate {
 		if (this.sample != null) {
 			this.sample._addReplicate(this);
 		}
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
 	}
 }

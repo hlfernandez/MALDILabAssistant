@@ -30,7 +30,7 @@ public class ConditionGroup extends Observable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "condition", cascade = CascadeType.ALL)
 	private List<Sample> samples;
 
-	@Column(length = 10)
+	@Column(length = 7)
 	private String color;
 
 	public ConditionGroup() {
@@ -90,14 +90,14 @@ public class ConditionGroup extends Observable {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	
+
 	public int countReplicates() {
 		int count = 0;
-		
+
 		for (Sample sample : this.getSamples()) {
 			count += sample.countReplicates();
 		}
-		
+
 		return count;
 	}
 
