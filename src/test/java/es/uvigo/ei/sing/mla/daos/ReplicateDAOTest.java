@@ -2,32 +2,35 @@ package es.uvigo.ei.sing.mla.daos;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import es.uvigo.ei.sing.mla.model.entities.Replicate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 @ContextConfiguration("file:src/test/resources/META-INF/daos.xml")
+@TestExecutionListeners({ 
+	DependencyInjectionTestExecutionListener.class,
+	DirtiesContextTestExecutionListener.class,
+	TransactionDbUnitTestExecutionListener.class
+})
+@DatabaseSetup("file:src/test/resources/META-INF/dataset.xml")
 public class ReplicateDAOTest {
-
-	@Autowired
-	private ApplicationContext applicationContext;
-
-	@PersistenceContext(type = PersistenceContextType.EXTENDED)
-	private EntityManager em;
-
 	@Autowired
 	private ReplicateDAO dao;
 
@@ -35,26 +38,12 @@ public class ReplicateDAOTest {
 
 	@Before
 	public void populateReplicates() {
+		replicates = new ArrayList<>();
 		replicates.add(new Replicate());
 		replicates.add(new Replicate());
 		replicates.add(new Replicate());
 		replicates.add(new Replicate());
 		replicates.add(new Replicate());
-	}
-
-	@Before
-	public void insertReplicates() {
-		em.getTransaction().begin();
-
-		for (final Replicate replicate : replicates) {
-			if (replicate.getId() == null) {
-				em.persist(replicate);
-			} else {
-				em.merge(replicate);
-			}
-		}
-
-		em.getTransaction().commit();
 	}
 
 	@Test

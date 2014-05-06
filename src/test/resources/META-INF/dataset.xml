@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<User login="pepe" password="pepe"/>
+	
+	<Experiment id="1" name="Experiment 1" description="Description" 
+		startDate="2014-03-01 12:00:02"
+		endDate="2014-03-01 12:00:02"
+		numRows="12" numCols="12"
+		rowNameType="NUMERIC"
+		colNameType="NUMERIC"
+		login="pepe"
+	/>
+
+	<ConditionGroup id="1" name="Condition 1" experimentId="1" color="#FF0000"/>
+
+	<Sample id="1" name="Sample 1" conditionId="1"/>
+
+	<Replicate id="1" name="Replicate 1" plateId="1" col="1" row="1"/>
+	<Replicate id="2" name="Replicate 2" plateId="2" col="2" row="2"/>
+	<Replicate id="3" name="Replicate 3" plateId="3" col="3" row="3"/>
+	<Replicate id="4" name="Replicate 4" plateId="4" col="4" row="4"/>
+	<Replicate id="5" name="Replicate 5" plateId="5" col="5" row="5"/>
+</dataset>

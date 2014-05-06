@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -25,6 +26,7 @@ public class ConditionGroup extends Observable {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="experimentId")
 	private Experiment experiment;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "condition", cascade = CascadeType.ALL)

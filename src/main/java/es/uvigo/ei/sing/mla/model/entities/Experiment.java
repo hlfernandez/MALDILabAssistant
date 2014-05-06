@@ -3,7 +3,6 @@ package es.uvigo.ei.sing.mla.model.entities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
