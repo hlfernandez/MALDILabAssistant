@@ -11,6 +11,8 @@ public interface ExperimentDAO {
 
 	public Experiment get(Integer experimentId);
 
+	public Experiment reload(Experiment experiment);
+
 	public Experiment update(Experiment experiment);
 
 	public void delete(Experiment experiment);
@@ -18,6 +20,4 @@ public interface ExperimentDAO {
 	public List<Experiment> list(User user);
 
 	public List<Experiment> listFilter(ExperimentFilter filter);
-
-	public Experiment reload(Experiment experiment);
 }

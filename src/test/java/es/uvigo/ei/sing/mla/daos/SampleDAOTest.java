@@ -16,6 +16,9 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
+import es.uvigo.ei.sing.mla.model.entities.Sample;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @ContextConfiguration("file:src/test/resources/META-INF/daos.xml")
@@ -24,12 +27,62 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 		TransactionDbUnitTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("file:src/test/resources/META-INF/dataset.xml")
-public class ReplicateDAOTest {
+public class SampleDAOTest {
 	@Autowired
-	private ReplicateDAO dao;
+	private SampleDAO sampleDAO;
+
+	@Autowired
+	private ConditionGroupDAO conditionDAO;
 
 	@Test
-	public void testReplicateDAOCanGet() {
-		assertThat(dao.get(1)).isNotNull();
+	public void testSampleDAOCanAdd() {
+		Sample sample = new Sample();
+
+		sampleDAO.add(sample);
+
+		assertThat(sampleDAO.get(sample.getId())).isNotNull();
+	}
+
+	@Test
+	public void testSampleDAOCanGet() {
+		assertThat(sampleDAO.get(1)).isNotNull();
+	}
+
+	@Test
+	public void testSampleDAOCanReload() {
+		Sample sample = sampleDAO.get(1);
+		sample.setName("New Sample 1");
+
+		sampleDAO.reload(sample);
+
+		assertThat(sampleDAO.get(sample.getId()).getName()).isEqualTo(
+				"Sample 1");
+	}
+
+	@Test
+	public void testSampleDAOCanUpdate() {
+		Sample sample = sampleDAO.get(1);
+		sample.setName("New Sample 1");
+
+		sampleDAO.update(sample);
+
+		assertThat(sampleDAO.get(sample.getId()).getName()).isEqualTo(
+				"New Sample 1");
+	}
+
+	@Test
+	public void testSampleDAOCanDelete() {
+		Sample sample = sampleDAO.get(1);
+
+		sampleDAO.delete(sample);
+
+		assertThat(sampleDAO.get(1)).isNull();
+	}
+
+	@Test
+	public void testSampleDAOCanList() {
+		ConditionGroup condition = conditionDAO.get(1);
+
+		assertThat(sampleDAO.list(condition).size()).isEqualTo(2);
 	}
 }

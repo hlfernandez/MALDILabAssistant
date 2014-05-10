@@ -1,23 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<User login="pepe" password="pepe"/>
-	
-	<Experiment id="1" name="Experiment 1" description="Description" 
-		startDate="2014-03-01 12:00:02"
-		endDate="2014-03-01 12:00:02"
-		numRows="12" numCols="12"
-		rowNameType="NUMERIC"
-		colNameType="NUMERIC"
-		login="pepe"
-	/>
+	<User login="pepe" password="pepe" />
+	<User login="paco" password="paco" />
 
-	<ConditionGroup id="1" name="Condition 1" experimentId="1" color="#FF0000"/>
+	<Experiment id="1" name="Experiment 1" description="Description"
+		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="12"
+		numCols="12" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
+	<Experiment id="2" name="Experiment 2" description="Description"
+		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="12"
+		numCols="12" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
 
-	<Sample id="1" name="Sample 1" conditionId="1"/>
+	<ConditionGroup id="1" name="Condition 1" color="#FF0000"
+		experimentId="1" />
+	<ConditionGroup id="2" name="Condition 2" color="#FF0000"
+		experimentId="2" />
 
-	<Replicate id="1" name="Replicate 1" plateId="1" col="1" row="1"/>
-	<Replicate id="2" name="Replicate 2" plateId="2" col="2" row="2"/>
-	<Replicate id="3" name="Replicate 3" plateId="3" col="3" row="3"/>
-	<Replicate id="4" name="Replicate 4" plateId="4" col="4" row="4"/>
-	<Replicate id="5" name="Replicate 5" plateId="5" col="5" row="5"/>
+	<Sample id="1" name="Sample 1" conditionId="1" />
+	<Sample id="2" name="Sample 2" conditionId="1" />
+	<Sample id="3" name="Sample 3" conditionId="2" />
+	<Sample id="4" name="Sample 4" conditionId="2" />
+
+	<Replicate id="1" name="Replicate 1" plateId="1" col="1" row="1"
+		sampleId="1" />
+	<Replicate id="2" name="Replicate 2" plateId="2" col="2" row="2"
+		sampleId="1" />
+	<Replicate id="3" name="Replicate 3" plateId="3" col="3" row="3"
+		sampleId="2" />
+	<Replicate id="4" name="Replicate 4" plateId="4" col="4" row="4"
+		sampleId="2" />
+	<Replicate id="5" name="Replicate 5" plateId="5" col="5" row="5"
+		sampleId="3" />
+	<Replicate id="6" name="Replicate 6" plateId="6" col="6" row="6"
+		sampleId="3" />
+	<Replicate id="7" name="Replicate 7" plateId="7" col="7" row="7"
+		sampleId="4" />
+	<Replicate id="8" name="Replicate 8" plateId="8" col="8" row="8"
+		sampleId="4" />
 </dataset>

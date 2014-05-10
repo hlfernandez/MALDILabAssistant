@@ -34,6 +34,13 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public Experiment reload(Experiment experiment) {
+		em.detach(experiment);
+		return this.get(experiment.getId());
+	}
+
+	@Override
 	@Transactional
 	public Experiment update(Experiment experiment) {
 		em.merge(experiment);
@@ -69,12 +76,5 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 		}
 
 		return filterExperiments;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Experiment reload(Experiment experiment) {
-		em.detach(experiment);
-		return this.get(experiment.getId());
 	}
 }

@@ -16,6 +16,8 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import es.uvigo.ei.sing.mla.model.entities.User;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @ContextConfiguration("file:src/test/resources/META-INF/daos.xml")
@@ -24,12 +26,32 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 		TransactionDbUnitTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("file:src/test/resources/META-INF/dataset.xml")
-public class ReplicateDAOTest {
+public class UserDAOTest {
 	@Autowired
-	private ReplicateDAO dao;
+	private UserDAO userDAO;
 
 	@Test
-	public void testReplicateDAOCanGet() {
-		assertThat(dao.get(1)).isNotNull();
+	public void testSampleDAOCanAdd() {
+		User user = new User("manolo", "manolo");
+
+		userDAO.add(user);
+
+		assertThat(userDAO.get(user.getLogin())).isNotNull();
+	}
+
+	@Test
+	public void testSampleDAOCanGet() {
+		assertThat(userDAO.get("pepe")).isNotNull();
+	}
+
+	@Test
+	public void testSampleDAOCanReload() {
+		User user = userDAO.get("pepe");
+		user.setPassword("New Pepe Password");
+
+		userDAO.reload(user);
+
+		assertThat(userDAO.get(user.getLogin()).getPassword())
+				.isEqualTo("pepe");
 	}
 }
