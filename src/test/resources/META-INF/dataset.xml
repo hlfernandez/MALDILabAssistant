@@ -20,7 +20,7 @@
 	<Sample id="3" name="Sample 3" conditionId="2" />
 	<Sample id="4" name="Sample 4" conditionId="2" />
 
-	<Replicate id="1" name="Replicate 1" plateId="1" col="0" row="0"
+	<Replicate id="1" name="Replicate 1" plateId="0" col="0" row="0"
 		sampleId="1" />
 	<Replicate id="2" name="Replicate 2" plateId="2" col="2" row="2"
 		sampleId="1" />

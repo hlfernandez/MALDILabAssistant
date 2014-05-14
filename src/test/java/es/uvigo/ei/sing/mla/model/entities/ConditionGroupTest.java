@@ -16,7 +16,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import es.uvigo.ei.sing.mla.daos.UserDAO;
+import es.uvigo.ei.sing.mla.daos.ConditionGroupDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -26,39 +26,50 @@ import es.uvigo.ei.sing.mla.daos.UserDAO;
 		TransactionDbUnitTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("file:src/test/resources/META-INF/dataset.xml")
-public class UserTest {
+public class ConditionGroupTest {
 	@Autowired
-	private UserDAO dao;
+	private ConditionGroupDAO dao;
 
-	@Test(expected = NullPointerException.class)
-	public void testUserAddNullExperimentThrowsException() {
-		dao.get("pepe").addExperiment(null);
+	@Test
+	public void testConditionIsOnPlate() {
+		assertThat(dao.get(1).isOnPlate()).isFalse();
+		assertThat(dao.get(2).isOnPlate()).isTrue();
 	}
 
 	@Test
-	public void testUserCanAddExperiment() {
-		User user = dao.get("pepe");
-
-		Experiment experiment = new Experiment();
-		assertThat(user.addExperiment(experiment)).isTrue();
-
-		experiment = user.getExperiments().get(0);
-		assertThat(user.addExperiment(experiment)).isFalse();
+	public void testConditionCanCountReplicates() {
+		assertThat(dao.get(1).countReplicates()).isEqualTo(4);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testUserRemoveNullExperimentThrowsException() {
-		dao.get("pepe").removeExperiment(null);
+	public void testConditionAddNullSampleThrowsException() {
+		dao.get(1).addSample(null);
 	}
 
 	@Test
-	public void testUserCanRemoveExperiment() {
-		User user = dao.get("pepe");
+	public void testConditionCanAddCondition() {
+		ConditionGroup condition = dao.get(1);
 
-		Experiment experiment = user.getExperiments().get(0);
-		assertThat(user.removeExperiment(experiment)).isTrue();
+		Sample sample = new Sample();
 
-		experiment = new Experiment();
-		assertThat(user.removeExperiment(experiment)).isFalse();
+		condition.addSample(sample);
+
+		assertThat(condition.getSamples().contains(sample));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testConditionRemoveNullSampleThrowsException() {
+		dao.get(1).removeSample(null);
+	}
+
+	@Test
+	public void testConditionCanRemoveCondition() {
+		ConditionGroup condition = dao.get(1);
+
+		Sample sample = condition.getSamples().get(0);
+		assertThat(condition.removeSample(sample)).isTrue();
+
+		sample = new Sample();
+		assertThat(condition.removeSample(sample)).isFalse();
 	}
 }

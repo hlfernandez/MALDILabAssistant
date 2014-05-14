@@ -16,7 +16,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import es.uvigo.ei.sing.mla.daos.UserDAO;
+import es.uvigo.ei.sing.mla.daos.SampleDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -26,39 +26,50 @@ import es.uvigo.ei.sing.mla.daos.UserDAO;
 		TransactionDbUnitTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("file:src/test/resources/META-INF/dataset.xml")
-public class UserTest {
+public class SampleTest {
 	@Autowired
-	private UserDAO dao;
+	private SampleDAO dao;
 
-	@Test(expected = NullPointerException.class)
-	public void testUserAddNullExperimentThrowsException() {
-		dao.get("pepe").addExperiment(null);
+	@Test
+	public void testSampleIsOnPlate() {
+		assertThat(dao.get(1).isOnPlate()).isFalse();
+		assertThat(dao.get(2).isOnPlate()).isTrue();
 	}
 
 	@Test
-	public void testUserCanAddExperiment() {
-		User user = dao.get("pepe");
-
-		Experiment experiment = new Experiment();
-		assertThat(user.addExperiment(experiment)).isTrue();
-
-		experiment = user.getExperiments().get(0);
-		assertThat(user.addExperiment(experiment)).isFalse();
+	public void testSampleCanCountReplicates() {
+		assertThat(dao.get(1).countReplicates()).isEqualTo(2);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testUserRemoveNullExperimentThrowsException() {
-		dao.get("pepe").removeExperiment(null);
+	public void testSampleAddNullReplicateThrowsException() {
+		dao.get(1).addReplicate(null);
 	}
 
 	@Test
-	public void testUserCanRemoveExperiment() {
-		User user = dao.get("pepe");
+	public void testSampleCanAddCondition() {
+		Sample sample = dao.get(1);
 
-		Experiment experiment = user.getExperiments().get(0);
-		assertThat(user.removeExperiment(experiment)).isTrue();
+		Replicate replicate = new Replicate();
 
-		experiment = new Experiment();
-		assertThat(user.removeExperiment(experiment)).isFalse();
+		sample.addReplicate(replicate);
+
+		assertThat(sample.getReplicates().contains(replicate));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testSampleRemoveNullReplicateThrowsException() {
+		dao.get(1).removeReplicate(null);
+	}
+
+	@Test
+	public void testSampleCanRemoveCondition() {
+		Sample sample = dao.get(1);
+
+		Replicate replicate = sample.getReplicates().get(0);
+		assertThat(sample.removeReplicate(replicate)).isTrue();
+
+		replicate = new Replicate();
+		assertThat(sample.removeReplicate(replicate)).isFalse();
 	}
 }
