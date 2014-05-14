@@ -21,7 +21,7 @@ import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-@ContextConfiguration("file:src/test/resources/META-INF/daos.xml")
+@ContextConfiguration("file:src/test/resources/META-INF/context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
 		DirtiesContextTestExecutionListener.class,
 		TransactionDbUnitTestExecutionListener.class,
