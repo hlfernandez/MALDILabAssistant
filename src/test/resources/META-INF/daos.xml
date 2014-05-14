@@ -1,6 +1,5 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans     
@@ -9,35 +8,37 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
- 
- 	<context:component-scan base-package="es.uvigo.ei.sing.mla" />
- 	
- 	<!-- jpa(hibernate) configuration -->
-	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
-		<property name="persistenceUnitName" value="testing"/>
+
+	<context:component-scan base-package="es.uvigo.ei.sing.mla" />
+
+	<!-- jpa(hibernate) configuration -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="testing" />
 	</bean>
-	
+
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
+
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-		<property name="url" value="jdbc:hsqldb:mem:mla_test" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/mla_test" />
+		<property name="username" value="mla_test" />
+		<property name="password" value="mla_test" />
 	</bean>
-	
-	<bean id="hsqldbDataTypeFactory" class="org.dbunit.ext.hsqldb.HsqldbDataTypeFactory"/>
-	
+
+	<bean id="mysqlDataTypeFactory" class="org.dbunit.ext.mysql.MySqlDataTypeFactory" />
+
 	<bean id="dbUnitDatabaseConfig" class="com.github.springtestdbunit.bean.DatabaseConfigBean">
-	    <property name="datatypeFactory" ref="hsqldbDataTypeFactory"/>
+		<property name="datatypeFactory" ref="mysqlDataTypeFactory" />
 	</bean>
-	<bean id="dbUnitDatabaseConnection" class="com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean">
-	    <property name="databaseConfig" ref="dbUnitDatabaseConfig"/>
-	    <property name="dataSource" ref="dataSource"/>
+	<bean id="dbUnitDatabaseConnection"
+		class="com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean">
+		<property name="databaseConfig" ref="dbUnitDatabaseConfig" />
+		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
- 	<tx:annotation-driven />
+
+	<tx:annotation-driven />
 </beans>

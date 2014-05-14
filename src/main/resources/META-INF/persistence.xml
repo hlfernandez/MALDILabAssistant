@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="2.0">
 	<persistence-unit name="myapp" transaction-type="RESOURCE_LOCAL">
 		<description>Production Persistence Unit (MySQL)</description>
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		
+
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
@@ -14,29 +15,25 @@
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 		</properties>
 	</persistence-unit>
-	
+
 	<persistence-unit name="testing" transaction-type="RESOURCE_LOCAL">
-		<description>Testing Persistence Unit (HSQLDB)</description>
+		<description>Testing Persistence Unit (MySQL)</description>
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
 		<class>es.uvigo.ei.sing.mla.model.entities.User</class>
-		<class>es.uvigo.ei.sing.mla.model.entities.Replicate</class>
-		<class>es.uvigo.ei.sing.mla.model.entities.Sample</class>
-		<class>es.uvigo.ei.sing.mla.model.entities.ConditionGroup</class>
 		<class>es.uvigo.ei.sing.mla.model.entities.Experiment</class>
+		<class>es.uvigo.ei.sing.mla.model.entities.ConditionGroup</class>
+		<class>es.uvigo.ei.sing.mla.model.entities.Sample</class>
+		<class>es.uvigo.ei.sing.mla.model.entities.Replicate</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 		<properties>
-			<property name="hibernate.connection.username" value="sa" />
-			<property name="hibernate.connection.password" value="" />
-			<property name="hibernate.connection.url" value="jdbc:hsqldb:mem:mla_test" />
-			<property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
-
-			<property name="hibernate.connection.shutdown" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+			<property name="hibernate.connection.username" value="mla_test" />
+			<property name="hibernate.connection.password" value="mla_test" />
 			<property name="hibernate.show_sql" value="false" />
-			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.use_sql_comments" value="false" />
+			<property name="hibernate.connection.url" value="jdbc:mysql://localhost/mla_test" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 		</properties>
 	</persistence-unit>

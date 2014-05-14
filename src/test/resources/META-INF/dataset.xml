@@ -4,8 +4,8 @@
 	<User login="paco" password="paco" />
 
 	<Experiment id="1" name="Experiment 1" description="Description"
-		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="12"
-		numCols="12" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
+		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="0"
+		numCols="0" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
 	<Experiment id="2" name="Experiment 2" description="Description"
 		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="12"
 		numCols="12" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
@@ -20,7 +20,7 @@
 	<Sample id="3" name="Sample 3" conditionId="2" />
 	<Sample id="4" name="Sample 4" conditionId="2" />
 
-	<Replicate id="1" name="Replicate 1" plateId="1" col="1" row="1"
+	<Replicate id="1" name="Replicate 1" plateId="1" col="0" row="0"
 		sampleId="1" />
 	<Replicate id="2" name="Replicate 2" plateId="2" col="2" row="2"
 		sampleId="1" />

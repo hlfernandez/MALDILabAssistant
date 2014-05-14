@@ -31,7 +31,7 @@ public class UserDAOTest {
 	private UserDAO userDAO;
 
 	@Test
-	public void testSampleDAOCanAdd() {
+	public void testUserDAOCanAdd() {
 		User user = new User("manolo", "manolo");
 
 		userDAO.add(user);
@@ -40,12 +40,12 @@ public class UserDAOTest {
 	}
 
 	@Test
-	public void testSampleDAOCanGet() {
+	public void testUserDAOCanGet() {
 		assertThat(userDAO.get("pepe")).isNotNull();
 	}
 
 	@Test
-	public void testSampleDAOCanReload() {
+	public void testUserDAOCanReload() {
 		User user = userDAO.get("pepe");
 		user.setPassword("New Pepe Password");
 
