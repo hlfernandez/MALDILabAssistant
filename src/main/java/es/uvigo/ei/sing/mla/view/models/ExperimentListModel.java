@@ -59,7 +59,7 @@ public class ExperimentListModel extends AbstractListModel<ConditionListModel> i
 				
 				this.conditions = new ArrayList<>(this.experiment.getConditions());
 			} catch (Exception e) {
-				// List model is not associated with any desktop
+				// List model is no longer associated with any desktop
 				o.deleteObserver(this);
 			}
 		}

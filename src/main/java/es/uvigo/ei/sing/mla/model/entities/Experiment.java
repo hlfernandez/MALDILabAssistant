@@ -86,37 +86,6 @@ public class Experiment extends Observable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public boolean isOnPlate() {
-		for (ConditionGroup condition : conditions) {
-			if (!condition.isOnPlate()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-	
-	public boolean isMetadataComplete() {
-		return this.getNumRows() > 0 && this.getNumCols() > 0 && 
-			!this.getConditions().isEmpty() && 
-			this.eachSampleHasReplicates();
-	}
-	
-	private boolean eachSampleHasReplicates() {
-		for (ConditionGroup condition : this.getConditions()) {
-			if (condition.getSamples().isEmpty()) {
-				return false;
-			} else {
-				for (Sample sample : condition.getSamples()) {
-					if (sample.getReplicates().isEmpty())
-						return false;
-				}
-			}
-		}
-		
-		return true;
-	}
 	
 	public String getDescription() {
 		return description;
@@ -222,7 +191,7 @@ public class Experiment extends Observable {
 		for (ConditionGroup condition : this.conditions) {
 			for (Sample sample : condition.getSamples()) {
 				for (Replicate replicate : sample.getReplicates()) {
-					if (replicate.getPlateId() == plateId)
+					if (replicate.getPlateId() != null && replicate.getPlateId() == plateId)
 						replicates.add(replicate);
 				}
 			}
@@ -261,5 +230,72 @@ public class Experiment extends Observable {
 
 		this.setChanged();
 		this.notifyObservers(conditionGroup);
+	}
+
+	public boolean isOnPlate() {
+		for (ConditionGroup condition : conditions) {
+			if (!condition.isOnPlate()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
+	public boolean isMetadataComplete() {
+		return this.getNumRows() > 0 && 
+			this.getNumCols() > 0 && 
+			!this.getConditions().isEmpty() && 
+			this.eachSampleHasReplicates();
+	}
+	
+	private boolean eachSampleHasReplicates() {
+		for (ConditionGroup condition : this.getConditions()) {
+			if (condition.getSamples().isEmpty()) {
+				return false;
+			} else {
+				for (Sample sample : condition.getSamples()) {
+					if (sample.getReplicates().isEmpty())
+						return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	public void placeReplicateAt(Replicate replicate, int plateId, int row, int col) {
+		Objects.requireNonNull(replicate, "replicate can't be null");
+		validatePlateLocation(plateId, row, col);
+
+		if (!replicate.isPlacedAt(plateId, row, col)) {
+			for (Replicate rep : this.getReplicates()) {
+				if (!rep.equals(replicate) && rep.isPlacedAt(plateId, row, col)) {
+					rep.removeFromPlate();
+					break;
+				}
+			}
+			
+			replicate.placeAtPlate(plateId, row, col);
+		}
+	}
+	
+	public Replicate getReplicateAt(int plateId, int row, int col) {
+		validatePlateLocation(plateId, row, col);
+		
+		for (Replicate replicate : this.getReplicates(plateId)) {
+			if (replicate.isPlacedAt(plateId, row, col)) 
+				return replicate;
+		}
+		
+		return null;
+	}
+
+	private void validatePlateLocation(int plateId, int row, int col) {
+		if (plateId < 0) throw new IllegalArgumentException("plateId can't be < 0");
+		if (row < 0) throw new IllegalArgumentException("row can't be < 0");
+		else if (row > this.getNumRows()) throw new IllegalArgumentException("row can't be greater than the number of rows");
+		if (col < 0) throw new IllegalArgumentException("row can't be < 0");
+		else if (col > this.getNumCols()) throw new IllegalArgumentException("col can't be greater than the number of columns");
 	}
 }

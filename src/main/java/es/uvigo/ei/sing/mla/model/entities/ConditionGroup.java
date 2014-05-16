@@ -57,16 +57,6 @@ public class ConditionGroup extends Observable {
 		this.name = name;
 	}
 
-	public boolean isOnPlate() {
-		for (Sample sample : samples) {
-			if (!sample.isOnPlate()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	public Experiment getExperiment() {
 		return experiment;
 	}
@@ -139,5 +129,15 @@ public class ConditionGroup extends Observable {
 
 		this.setChanged();
 		this.notifyObservers(sample);
+	}
+
+	public boolean isOnPlate() {
+		for (Sample sample : samples) {
+			if (!sample.isOnPlate()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

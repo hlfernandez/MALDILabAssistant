@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.GlobalCommandEvent;
 import org.zkoss.bind.annotation.BindingParam;
@@ -28,9 +29,11 @@ import es.uvigo.ei.sing.mla.model.entities.Sample;
 import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentService;
 import es.uvigo.ei.sing.mla.util.CellNameType;
+import es.uvigo.ei.sing.mla.view.converters.ColorUtils;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ExperimentViewModel {
+	@Autowired
 	@WireVariable
 	private ExperimentService experimentService;
 
@@ -48,9 +51,12 @@ public class ExperimentViewModel {
 				final Map<String, Object> args = globalEvent.getArgs();
 
 				switch (globalEvent.getCommand()) {
-				case "selectedReplicatePlaced":
-					ExperimentViewModel.this.selectedReplicatePlaced((Replicate) args.get("replicate"));
+				case "selectedReplicateChanged":
+					ExperimentViewModel.this.selectedReplicateChanged((Replicate) args.get("replicate"));
 					break;
+//				case "selectedReplicatePlaced":
+//					ExperimentViewModel.this.selectedReplicatePlaced((Replicate) args.get("replicate"));
+//					break;
 					//					case "onSampleSelected":
 					//						this.selectedSample = (Sample) args.get("sample");
 					//						break;
@@ -83,14 +89,24 @@ public class ExperimentViewModel {
 		EventQueues.lookup("experiment", true).subscribe(this.globalCommandListener);
 	}
 
-	@GlobalCommand("selectedReplicatePlaced")
-	public void selectedReplicatePlaced(
-			@BindingParam("replicate") Replicate replicate
-			) {
-		if (this.selectedReplicate == replicate) {
+	@GlobalCommand("selectedReplicateChanged")
+	@NotifyChange("selectedReplicate")
+	public void selectedReplicateChanged(Replicate replicate) {
+		if (this.selectedReplicate != replicate) {
+			this.selectedReplicate = replicate;
 			BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
 		}
 	}
+
+//	@GlobalCommand("selectedReplicatePlaced")
+//	@NotifyChange("selectedReplicate")
+//	public void selectedReplicatePlaced(
+//		@BindingParam("replicate") Replicate replicate
+//	) {
+//		if (this.selectedReplicate == replicate) {
+//			BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
+//		}
+//	}
 
 	public boolean isMetadataCompleted() {
 		return this.experiment.isMetadataComplete();
@@ -102,6 +118,10 @@ public class ExperimentViewModel {
 
 	public Experiment getExperiment() {
 		return experiment;
+	}
+	
+	public void setExperiment(Experiment experiment) {
+		this.experiment = experiment;
 	}
 
 	public CellNameType[] getCellNameTypes() {
@@ -168,8 +188,8 @@ public class ExperimentViewModel {
 	@Command("changeSelectedReplicate")
 	@NotifyChange({ "selectedCondition", "selectedSample", "selectedReplicate" })
 	public void setSelectedReplicate(
-			@BindingParam("replicate") Replicate selectedReplicate
-			) {
+		@BindingParam("replicate") Replicate selectedReplicate
+	) {
 		this.selectedCondition = null;
 		this.selectedSample = null;
 		this.selectedReplicate = selectedReplicate;
@@ -215,16 +235,18 @@ public class ExperimentViewModel {
 	@Command
 	public void addCondition() {
 		final ConditionGroup condition = new ConditionGroup();
-		condition.setName("Condition" + (this.experiment.getConditions().size() + 1));
-		condition.setColor("#000000");
+		final int conditionIndex = this.experiment.getConditions().size() + 1;
+		
+		condition.setName("Condition " + conditionIndex);
+		condition.setColor(ColorUtils.getThirtyColorHex(conditionIndex-1));
 
 		this.experiment.addCondition(condition);
 	}
 
 	@Command
 	public void removeCondition(
-			@BindingParam("condition") ConditionGroup condition
-			) {
+		@BindingParam("condition") ConditionGroup condition
+	) {
 		this.experiment.removeCondition(condition);
 	}
 
@@ -238,9 +260,9 @@ public class ExperimentViewModel {
 
 	@Command
 	public void removeSample(
-			@BindingParam("condition") ConditionGroup condition,
-			@BindingParam("sample") Sample sample
-			) {
+		@BindingParam("condition") ConditionGroup condition,
+		@BindingParam("sample") Sample sample
+	) {
 		condition.removeSample(sample);
 	}
 
@@ -254,9 +276,9 @@ public class ExperimentViewModel {
 
 	@Command
 	public void removeReplicate(
-			@BindingParam("sample") Sample sample,
-			@BindingParam("replicate") Replicate replicate
-			) {
+		@BindingParam("sample") Sample sample,
+		@BindingParam("replicate") Replicate replicate
+	) {
 		sample.removeReplicate(replicate);
 	}
 }

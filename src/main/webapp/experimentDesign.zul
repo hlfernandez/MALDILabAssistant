@@ -3,35 +3,38 @@
 	<style>
         .odd-condition {
             background-color: #177FBF !important;
-            color: white;
+            color: black;
         }
         .odd-condition:hover {
             color: black;
         }
         .even-condition {
             background-color: #3D8EBF;
-            color: white;
+            color: black;
         }
         .even-condition:hover {
             color: black;
         }
+        
+        .z-row .z-detail-outer {
+        	padding: 0px !important;
+        }
     </style>
     <!-- Sample: 66D8F2, 96E1F2 - Replicate: 99F2F8, CBF5F8 -->
 	<hlayout>
-		<grid width="240px" model="@load(vm.model)" oddRowSclass="odd-condition" sclass="even-condition">
+		<grid width="240px" model="@load(vm.model)">
 			<columns>
 				<column width="40px" />
 				<column label="Conditions" />
 			</columns>
 			<rows>
 				<template name="model" var="condition">
-					<row>
-						<cell>
-							<label hflex="true" value="@load(condition.condition.name)" sclass="background-color: #177FBF"/>
-							<checkbox checked="@load(vm.selectedCondition eq condition.condition)"
-								onCheck="@command('changeSelectedCondition', condition=condition.condition)"
-								disabled="@load(condition.condition.isOnPlate())" />
-						</cell>
+					<row style="@load(condition.condition) @converter('es.uvigo.ei.sing.mla.view.converters.ConditionToSClassConverter')">
+						<checkbox style="@load(condition.condition) @converter('es.uvigo.ei.sing.mla.view.converters.ConditionToSClassConverter')"
+							checked="@load(vm.selectedCondition eq condition.condition)"
+							onCheck="@command('changeSelectedCondition', condition=condition.condition)"
+							label="@load(condition.condition.name)"
+						/>
 						<detail open="false" fulfill="onOpen">
 							<grid hflex="true" model="@load(condition)">
 								<columns>
@@ -40,14 +43,12 @@
 								</columns>
 								<rows>
 									<template name="model" var="sample">
-										<row>
-											<cell>
-												<label hflex="true" value="@load(sample.sample.name)" />
-												<checkbox
-													checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
-													onCheck="@command('changeSelectedSample', sample=sample.sample)"
-													disabled="@load(sample.sample.isOnPlate())" />
-											</cell>
+										<row  style="@load(condition.condition) @converter('es.uvigo.ei.sing.mla.view.converters.ConditionToSClassConverter')">
+											<checkbox style="@load(condition.condition) @converter('es.uvigo.ei.sing.mla.view.converters.ConditionToSClassConverter')"
+												checked="@load(vm.selectedSample eq sample.sample or vm.selectedCondition eq sample.sample.condition)"
+												onCheck="@command('changeSelectedSample', sample=sample.sample)"
+												label="@load(sample.sample.name)"
+											/>
 											<detail open="false" fulfill="onOpen">
 												<grid hflex="true" model="@load(sample)">
 													<columns>
@@ -55,14 +56,13 @@
 													</columns>
 													<rows>
 														<template name="model" var="replicate">
-															<row>
-																<cell>
-																	<label hflex="true" value="@load(replicate.name)" />
-																	<checkbox
-																		checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample or vm.selectedCondition eq replicate.sample.condition)"
-																		onCheck="@command('changeSelectedReplicate', replicate=replicate)"
-																		disabled="@load(replicate.isOnPlate())" />
-																</cell>
+															<row style="@load(condition.condition) @converter('es.uvigo.ei.sing.mla.view.converters.ConditionToSClassConverter')">
+																<checkbox style="@load(condition.condition) @converter('es.uvigo.ei.sing.mla.view.converters.ConditionToSClassConverter')"
+																	checked="@load(vm.selectedReplicate eq replicate or vm.selectedSample eq replicate.sample or vm.selectedCondition eq replicate.sample.condition)"
+																	onCheck="@command('changeSelectedReplicate', replicate=replicate)"
+																	label="@load(replicate.name)"
+																	image="@load(replicate.isOnPlate() ? 'icons/placed.png': null)"
+																/>
 															</row>
 														</template>
 													</rows>
@@ -77,6 +77,7 @@
 				</template>
 			</rows>
 		</grid>
+		
 		<tabbox width="720px" height="720px">
 			<tabs children="@load(vm.plateNames)">
 				<template name="children" var="plateName">
@@ -95,7 +96,7 @@
 							hflex="true" vflex="true"
 							columnwidth="25" rowheight="25"
 							apply="es.uvigo.ei.sing.mla.view.models.PlateEditorComposer"
-							/>
+						/>
 					</tabpanel>
 				</template>
 			</tabpanels>

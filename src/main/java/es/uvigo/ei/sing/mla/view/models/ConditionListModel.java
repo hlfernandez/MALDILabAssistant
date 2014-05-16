@@ -49,7 +49,7 @@ public class ConditionListModel extends AbstractListModel<SampleListModel> imple
 					this.fireEvent(ListDataEvent.CONTENTS_CHANGED, -1, -1);
 				}
 			} catch (Exception e) {
-				// List model is not associated with any desktop
+				// List model is no longer associated with any desktop
 				o.deleteObserver(this);
 			}
 		}

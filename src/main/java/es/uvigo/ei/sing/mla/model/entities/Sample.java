@@ -54,16 +54,6 @@ public class Sample extends Observable {
 		this.name = name;
 	}
 
-	public boolean isOnPlate() {
-		for (Replicate replicate : replicates) {
-			if (!replicate.isOnPlate()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	public ConditionGroup getCondition() {
 		return this.condition;
 	}
@@ -124,5 +114,23 @@ public class Sample extends Observable {
 
 		this.setChanged();
 		this.notifyObservers(replicate);
+	}
+
+	public boolean isOnPlate() {
+		for (Replicate replicate : replicates) {
+			if (!replicate.isOnPlate()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public String getColor() {
+		if (this.getCondition() != null) {
+			return this.getCondition().getColor();
+		} else {
+			return null;
+		}
 	}
 }

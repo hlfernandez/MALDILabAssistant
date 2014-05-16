@@ -1,5 +1,7 @@
 package es.uvigo.ei.sing.mla.model.entities;
 
+import java.util.Observable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Replicate {
+public class Replicate extends Observable {
 	@Id
 	@GeneratedValue
 	private Integer id;
@@ -17,9 +19,12 @@ public class Replicate {
 	@Column(length = 32)
 	private String name;
 
-	private int plateId = 0;
-	private int col = 0;
-	private int row = 0;
+	@Column(nullable = true)
+	private Integer plateId;
+	@Column(nullable = true)
+	private Integer col;
+	@Column(nullable = true)
+	private Integer row;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sampleId")
@@ -46,32 +51,16 @@ public class Replicate {
 		this.name = name;
 	}
 
-	public int getPlateId() {
+	public Integer getPlateId() {
 		return plateId;
 	}
 
-	public void setPlateId(int plateId) {
-		this.plateId = plateId;
-	}
-
-	public boolean isOnPlate() {
-		return plateId > 0;
-	}
-
-	public int getCol() {
+	public Integer getCol() {
 		return col;
 	}
 
-	public void setCol(int col) {
-		this.col = col;
-	}
-
-	public int getRow() {
+	public Integer getRow() {
 		return row;
-	}
-
-	public void setRow(int row) {
-		this.row = row;
 	}
 
 	public Sample getSample() {
@@ -87,6 +76,46 @@ public class Replicate {
 
 		if (this.sample != null) {
 			this.sample._addReplicate(this);
+		}
+	}
+
+	public boolean isOnPlate() {
+		return this.plateId != null && this.col != null && this.row != null;
+	}
+	
+	public boolean isOnPlate(int plateId) {
+		return this.getPlateId() != null && this.getPlateId() == plateId;
+	}
+	
+	public boolean isPlacedAt(int plateId, int row, int col) {
+		return this.getPlateId() != null && this.getPlateId() == plateId && 
+			this.getRow() != null && this.getRow() == row && 
+			this.getCol() != null && this.getCol() == col;
+	}
+	
+	public void removeFromPlate() {
+		this.plateId = null;
+		this.col = null;
+		this.row = null;
+		
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	void placeAtPlate(int plateId, int row, int col) {
+		this.plateId = plateId;
+		this.row = row;
+		this.col = col;
+		
+		this.setChanged();
+		this.notifyObservers();
+	}
+	
+	public String getColor() {
+		if (this.getSample() != null) {
+			return this.getSample().getColor();
+		} else {
+			return null;
 		}
 	}
 }
