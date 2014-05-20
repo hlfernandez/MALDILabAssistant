@@ -1,4 +1,4 @@
-package es.uvigo.ei.sing.mla.model.entities;
+package es.uvigo.ei.sing.mla.view.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,8 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import es.uvigo.ei.sing.mla.daos.ConditionGroupDAO;
+import es.uvigo.ei.sing.mla.model.entities.Experiment;
+import es.uvigo.ei.sing.mla.services.ExperimentService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -26,49 +27,40 @@ import es.uvigo.ei.sing.mla.daos.ConditionGroupDAO;
 		TransactionDbUnitTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("file:src/test/resources/META-INF/dataset.xml")
-public class ConditionGroupTest {
+public class ExperimentViewModelTest {
 	@Autowired
-	private ConditionGroupDAO dao;
+	private ExperimentViewModel model;
+
+	@Autowired
+	private ExperimentService service;
 
 	@Test
-	public void testConditionIsOnPlate() {
-		assertThat(dao.get(1).isOnPlate()).isFalse();
-	}
+	public void testExperimentViewModelCanGetPlateIds() {
+		Experiment experiment = service.get(1);
 
-	@Test
-	public void testConditionCanCountReplicates() {
-		assertThat(dao.get(1).countReplicates()).isEqualTo(4);
-	}
+		final int cols = experiment.getNumCols();
+		final int rows = experiment.getNumRows();
+		final int replicates = experiment.countReplicates();
 
-	@Test(expected = NullPointerException.class)
-	public void testConditionAddNullSampleThrowsException() {
-		dao.get(1).addSample(null);
-	}
+		model.setExperiment(experiment);
 
-	@Test
-	public void testConditionCanAddCondition() {
-		ConditionGroup condition = dao.get(1);
+		final int numPlates = (int) Math.ceil((double) replicates / (double) (cols * rows));
 
-		Sample sample = new Sample();
-
-		condition.addSample(sample);
-
-		assertThat(condition.getSamples().contains(sample));
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void testConditionRemoveNullSampleThrowsException() {
-		dao.get(1).removeSample(null);
+		assertThat(model.getPlateIds().size()).isEqualTo(numPlates);
 	}
 
 	@Test
-	public void testConditionCanRemoveCondition() {
-		ConditionGroup condition = dao.get(1);
+	public void testExperimentViewModelCanGetPlateNames() {
+		Experiment experiment = service.get(1);
 
-		Sample sample = condition.getSamples().get(0);
-		assertThat(condition.removeSample(sample)).isTrue();
+		final int cols = experiment.getNumCols();
+		final int rows = experiment.getNumRows();
+		final int replicates = experiment.countReplicates();
 
-		sample = new Sample();
-		assertThat(condition.removeSample(sample)).isFalse();
+		model.setExperiment(experiment);
+
+		final int numPlates = (int) Math.ceil((double) replicates / (double) (cols * rows));
+
+		assertThat(model.getPlateNames().size()).isEqualTo(numPlates);
 	}
 }

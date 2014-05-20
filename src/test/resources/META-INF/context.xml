@@ -30,6 +30,8 @@
 	</bean>
 
 	<bean id="mysqlDataTypeFactory" class="org.dbunit.ext.mysql.MySqlDataTypeFactory" />
+	
+	<bean id="experimentViewModel" class="es.uvigo.ei.sing.mla.view.models.ExperimentViewModel" />
 
 	<bean id="dbUnitDatabaseConfig" class="com.github.springtestdbunit.bean.DatabaseConfigBean">
 		<property name="datatypeFactory" ref="mysqlDataTypeFactory" />

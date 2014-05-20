@@ -1,6 +1,5 @@
 package es.uvigo.ei.sing.mla.view.models;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.zkoss.bind.annotation.BindingParam;

@@ -33,7 +33,6 @@ public class ExperimentTest {
 	@Test
 	public void testExperimentIsOnPlate() {
 		assertThat(dao.get(1).isOnPlate()).isFalse();
-		assertThat(dao.get(2).isOnPlate()).isTrue();
 	}
 
 	@Test

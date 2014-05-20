@@ -52,17 +52,21 @@ public class ExperimentViewModel {
 
 				switch (globalEvent.getCommand()) {
 				case "selectedReplicateChanged":
-					ExperimentViewModel.this.selectedReplicateChanged((Replicate) args.get("replicate"));
+					ExperimentViewModel.this
+							.selectedReplicateChanged((Replicate) args
+									.get("replicate"));
 					break;
-//				case "selectedReplicatePlaced":
-//					ExperimentViewModel.this.selectedReplicatePlaced((Replicate) args.get("replicate"));
-//					break;
-					//					case "onSampleSelected":
-					//						this.selectedSample = (Sample) args.get("sample");
-					//						break;
-					//					case "onConditionSelected":
-					//						this.selectedCondition = (ConditionGroup) args.get("condition");
-					//						break;
+				// case "selectedReplicatePlaced":
+				// ExperimentViewModel.this.selectedReplicatePlaced((Replicate)
+				// args.get("replicate"));
+				// break;
+				// case "onSampleSelected":
+				// this.selectedSample = (Sample) args.get("sample");
+				// break;
+				// case "onConditionSelected":
+				// this.selectedCondition = (ConditionGroup)
+				// args.get("condition");
+				// break;
 				}
 			}
 		}
@@ -83,10 +87,12 @@ public class ExperimentViewModel {
 			this.experiment = experimentService.get(id);
 		} else {
 			this.experiment = new Experiment();
-			this.experiment.setUser((User) Sessions.getCurrent().getAttribute("user"));
+			this.experiment.setUser((User) Sessions.getCurrent().getAttribute(
+					"user"));
 		}
 
-		EventQueues.lookup("experiment", true).subscribe(this.globalCommandListener);
+		EventQueues.lookup("experiment", true).subscribe(
+				this.globalCommandListener);
 	}
 
 	@GlobalCommand("selectedReplicateChanged")
@@ -98,15 +104,15 @@ public class ExperimentViewModel {
 		}
 	}
 
-//	@GlobalCommand("selectedReplicatePlaced")
-//	@NotifyChange("selectedReplicate")
-//	public void selectedReplicatePlaced(
-//		@BindingParam("replicate") Replicate replicate
-//	) {
-//		if (this.selectedReplicate == replicate) {
-//			BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
-//		}
-//	}
+	// @GlobalCommand("selectedReplicatePlaced")
+	// @NotifyChange("selectedReplicate")
+	// public void selectedReplicatePlaced(
+	// @BindingParam("replicate") Replicate replicate
+	// ) {
+	// if (this.selectedReplicate == replicate) {
+	// BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
+	// }
+	// }
 
 	public boolean isMetadataCompleted() {
 		return this.experiment.isMetadataComplete();
@@ -119,13 +125,29 @@ public class ExperimentViewModel {
 	public Experiment getExperiment() {
 		return experiment;
 	}
-	
+
 	public void setExperiment(Experiment experiment) {
 		this.experiment = experiment;
 	}
 
 	public CellNameType[] getCellNameTypes() {
 		return CellNameType.values();
+	}
+
+	public List<Integer> getPlateIds() {
+		final int cols = this.experiment.getNumCols();
+		final int rows = this.experiment.getNumRows();
+		final int replicates = this.experiment.countReplicates();
+
+		final int numPlates = (int) Math.ceil((double) replicates
+				/ (double) (cols * rows));
+
+		final List<Integer> plateIds = new ArrayList<>(numPlates);
+		for (int i = 1; i <= numPlates; i++) {
+			plateIds.add(i);
+		}
+
+		return plateIds;
 	}
 
 	public List<String> getPlateNames() {
@@ -138,21 +160,6 @@ public class ExperimentViewModel {
 		return plateNames;
 	}
 
-	public List<Integer> getPlateIds() {
-		final int cols = this.experiment.getNumCols();
-		final int rows = this.experiment.getNumRows();
-		final int replicates = this.experiment.countReplicates();
-
-		final int numPlates = (int) Math.ceil((double) replicates / (double) (cols * rows));
-
-		final List<Integer> plateIds = new ArrayList<>(numPlates);
-		for (int i = 1; i <= numPlates; i++) {
-			plateIds.add(i);
-		}
-
-		return plateIds;
-	}
-
 	public ConditionGroup getSelectedCondition() {
 		return selectedCondition;
 	}
@@ -160,8 +167,7 @@ public class ExperimentViewModel {
 	@Command("changeSelectedCondition")
 	@NotifyChange({ "selectedCondition", "selectedSample", "selectedReplicate" })
 	public void setSelectedCondition(
-			@BindingParam("condition") ConditionGroup selectedCondition
-			) {
+			@BindingParam("condition") ConditionGroup selectedCondition) {
 		this.selectedCondition = selectedCondition;
 		this.selectedSample = null;
 		this.selectedReplicate = null;
@@ -178,7 +184,8 @@ public class ExperimentViewModel {
 		this.selectedSample = selectedSample;
 		this.selectedReplicate = null;
 
-		//		BindUtils.postGlobalCommand("experiment", null, "onSampleSelected", Collections.singletonMap("sample", (Object) selectedSample));
+		// BindUtils.postGlobalCommand("experiment", null, "onSampleSelected",
+		// Collections.singletonMap("sample", (Object) selectedSample));
 	}
 
 	public Replicate getSelectedReplicate() {
@@ -188,8 +195,7 @@ public class ExperimentViewModel {
 	@Command("changeSelectedReplicate")
 	@NotifyChange({ "selectedCondition", "selectedSample", "selectedReplicate" })
 	public void setSelectedReplicate(
-		@BindingParam("replicate") Replicate selectedReplicate
-	) {
+			@BindingParam("replicate") Replicate selectedReplicate) {
 		this.selectedCondition = null;
 		this.selectedSample = null;
 		this.selectedReplicate = selectedReplicate;
@@ -219,7 +225,8 @@ public class ExperimentViewModel {
 
 	@Command
 	public void exit() {
-		EventQueues.lookup("experiment", true).unsubscribe(this.globalCommandListener);
+		EventQueues.lookup("experiment", true).unsubscribe(
+				this.globalCommandListener);
 		this.cancel();
 	}
 
@@ -236,17 +243,16 @@ public class ExperimentViewModel {
 	public void addCondition() {
 		final ConditionGroup condition = new ConditionGroup();
 		final int conditionIndex = this.experiment.getConditions().size() + 1;
-		
+
 		condition.setName("Condition " + conditionIndex);
-		condition.setColor(ColorUtils.getThirtyColorHex(conditionIndex-1));
+		condition.setColor(ColorUtils.getThirtyColorHex(conditionIndex - 1));
 
 		this.experiment.addCondition(condition);
 	}
 
 	@Command
 	public void removeCondition(
-		@BindingParam("condition") ConditionGroup condition
-	) {
+			@BindingParam("condition") ConditionGroup condition) {
 		this.experiment.removeCondition(condition);
 	}
 
@@ -260,9 +266,8 @@ public class ExperimentViewModel {
 
 	@Command
 	public void removeSample(
-		@BindingParam("condition") ConditionGroup condition,
-		@BindingParam("sample") Sample sample
-	) {
+			@BindingParam("condition") ConditionGroup condition,
+			@BindingParam("sample") Sample sample) {
 		condition.removeSample(sample);
 	}
 
@@ -275,10 +280,8 @@ public class ExperimentViewModel {
 	}
 
 	@Command
-	public void removeReplicate(
-		@BindingParam("sample") Sample sample,
-		@BindingParam("replicate") Replicate replicate
-	) {
+	public void removeReplicate(@BindingParam("sample") Sample sample,
+			@BindingParam("replicate") Replicate replicate) {
 		sample.removeReplicate(replicate);
 	}
 }
