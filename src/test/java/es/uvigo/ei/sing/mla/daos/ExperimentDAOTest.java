@@ -51,13 +51,12 @@ public class ExperimentDAOTest {
 
 	@Test
 	public void testExperimentDAOCanReload() {
-		Experiment experiment = experimentDAO.get(1);
-		experiment.setName("New Experiment 1");
+		Experiment experiment = experimentDAO.get(2);
+		experiment.setName("New Experiment 2");
 
 		experimentDAO.reload(experiment);
 
-		assertThat(experimentDAO.get(experiment.getId()).getName()).isEqualTo(
-				"Experiment 1");
+		assertThat(experimentDAO.get(experiment.getId()).getName()).isEqualTo("Experiment 2");
 	}
 
 	@Test
@@ -91,7 +90,7 @@ public class ExperimentDAOTest {
 	public void testExperimentDAOCanListFilter() {
 		User user = userDAO.get("pepe");
 		ExperimentFilter filter = new ExperimentFilter(user);
-		filter.setName("Experiment 1");
+		filter.setName("Experiment 2");
 
 		assertThat(experimentDAO.listFilter(filter).size()).isEqualTo(1);
 	}

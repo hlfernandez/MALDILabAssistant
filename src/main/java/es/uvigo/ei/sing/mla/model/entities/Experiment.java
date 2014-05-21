@@ -119,7 +119,9 @@ public class Experiment extends Observable {
 		return numRows;
 	}
 
-	public void setNumRows(int numRows) {
+	public void setNumRows(int numRows) throws IllegalArgumentException {
+		if (numRows <= 0) throw new IllegalArgumentException("numRows can't be <= 0");
+		
 		this.numRows = numRows;
 	}
 
@@ -127,7 +129,9 @@ public class Experiment extends Observable {
 		return numCols;
 	}
 
-	public void setNumCols(int numCols) {
+	public void setNumCols(int numCols) throws IllegalArgumentException {
+		if (numCols <= 0) throw new IllegalArgumentException("numCols can't be <= 0");
+		
 		this.numCols = numCols;
 	}
 
@@ -261,6 +265,8 @@ public class Experiment extends Observable {
 
 	public boolean isMetadataComplete() {
 		return this.getNumRows() > 0 && this.getNumCols() > 0
+				&& this.getName() != null 
+				&& !this.getName().isEmpty()
 				&& !this.getConditions().isEmpty()
 				&& this.eachSampleHasReplicates();
 	}

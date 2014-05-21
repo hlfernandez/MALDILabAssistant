@@ -3,12 +3,12 @@
 	<User login="pepe" password="pepe" />
 	<User login="paco" password="paco" />
 
-	<Experiment id="1" name="Experiment 1" description="Description"
-		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="0"
-		numCols="0" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
 	<Experiment id="2" name="Experiment 2" description="Description"
 		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="12"
 		numCols="12" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
+	<Experiment id="1" description="Description"
+		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="10"
+		numCols="10" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
 
 	<ConditionGroup id="1" name="Condition 1" color="#FF0000"
 		experimentId="1" />

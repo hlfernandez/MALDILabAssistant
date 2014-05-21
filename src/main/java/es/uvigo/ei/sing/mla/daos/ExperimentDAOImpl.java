@@ -57,10 +57,9 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Experiment> list(User user) {
-		return em
-				.createQuery("FROM Experiment ex WHERE ex.user = :user",
-						Experiment.class).setParameter("user", user)
-				.getResultList();
+		return em.createQuery("FROM Experiment ex WHERE ex.user = :user", Experiment.class)
+			.setParameter("user", user)
+		.getResultList();
 	}
 
 	@Override
@@ -70,7 +69,7 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 		String name = filter.getName().toLowerCase();
 
 		for (Experiment exp : this.list(filter.getUser())) {
-			if (exp.getName().toLowerCase().contains(name)) {
+			if (exp.getName() != null && exp.getName().toLowerCase().contains(name)) {
 				filterExperiments.add(exp);
 			}
 		}

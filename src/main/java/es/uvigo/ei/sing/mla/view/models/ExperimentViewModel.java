@@ -1,6 +1,7 @@
 package es.uvigo.ei.sing.mla.view.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -141,19 +142,23 @@ public class ExperimentViewModel {
 	}
 
 	public List<Integer> getPlateIds() {
-		final int cols = this.experiment.getNumCols();
-		final int rows = this.experiment.getNumRows();
 		final int replicates = this.experiment.countReplicates();
-
-		final int numPlates = (int) Math.ceil((double) replicates
-				/ (double) (cols * rows));
-
-		final List<Integer> plateIds = new ArrayList<>(numPlates);
-		for (int i = 1; i <= numPlates; i++) {
-			plateIds.add(i);
+		
+		if (replicates <= 1) {
+			return Collections.singletonList(1);
+		} else {
+			final int cols = this.experiment.getNumCols();
+			final int rows = this.experiment.getNumRows();
+			
+			final int numPlates = (int) Math.ceil((double) replicates / (double) (cols * rows));
+			
+			final List<Integer> plateIds = new ArrayList<>(numPlates);
+			for (int i = 1; i <= numPlates; i++) {
+				plateIds.add(i);
+			}
+			
+			return plateIds;
 		}
-
-		return plateIds;
 	}
 
 	public List<String> getPlateNames() {
