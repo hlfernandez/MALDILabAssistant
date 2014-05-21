@@ -117,6 +117,10 @@ public class Sample extends Observable {
 	}
 
 	public boolean isOnPlate() {
+		if(replicates.isEmpty()) {
+			return false;
+		}
+		
 		for (Replicate replicate : replicates) {
 			if (!replicate.isOnPlate()) {
 				return false;

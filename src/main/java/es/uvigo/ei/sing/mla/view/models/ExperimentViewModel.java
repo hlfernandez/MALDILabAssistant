@@ -12,12 +12,14 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Messagebox;
@@ -116,6 +118,10 @@ public class ExperimentViewModel {
 
 	public boolean isMetadataCompleted() {
 		return this.experiment.isMetadataComplete();
+	}
+
+	public boolean isOnPlate() {
+		return this.experiment.isOnPlate();
 	}
 
 	public ExperimentListModel getModel() {
@@ -283,5 +289,25 @@ public class ExperimentViewModel {
 	public void removeReplicate(@BindingParam("sample") Sample sample,
 			@BindingParam("replicate") Replicate replicate) {
 		sample.removeReplicate(replicate);
+	}
+
+	@Command
+	@NotifyChange("experiment")
+	public void uploadFile(@BindingParam("event") UploadEvent event) {
+		this.experiment.setFile(event.getMedia().getByteData());
+		this.save();
+	}
+
+	@Command
+	public void downloadFile() {
+		Filedownload.save(this.experiment.getFile(), "application/zip",
+				this.experiment.getName() + ".zip");
+	}
+
+	@Command
+	@NotifyChange("experiment")
+	public void deleteFile() {
+		this.experiment.setFile(null);
+		this.save();
 	}
 }

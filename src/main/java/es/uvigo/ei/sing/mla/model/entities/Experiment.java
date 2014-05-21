@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -58,6 +59,9 @@ public class Experiment extends Observable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "experiment", cascade = CascadeType.ALL)
 	private List<ConditionGroup> conditions;
 
+	@Lob
+	private byte[] file;
+
 	public Experiment() {
 		this.name = "";
 		this.description = "";
@@ -86,7 +90,7 @@ public class Experiment extends Observable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -147,6 +151,14 @@ public class Experiment extends Observable {
 		return this.user;
 	}
 
+	public byte[] getFile() {
+		return file;
+	}
+
+	public void setFile(byte[] file) {
+		this.file = file;
+	}
+
 	public int countReplicates() {
 		int count = 0;
 
@@ -191,7 +203,8 @@ public class Experiment extends Observable {
 		for (ConditionGroup condition : this.conditions) {
 			for (Sample sample : condition.getSamples()) {
 				for (Replicate replicate : sample.getReplicates()) {
-					if (replicate.getPlateId() != null && replicate.getPlateId() == plateId)
+					if (replicate.getPlateId() != null
+							&& replicate.getPlateId() == plateId)
 						replicates.add(replicate);
 				}
 			}
@@ -233,6 +246,10 @@ public class Experiment extends Observable {
 	}
 
 	public boolean isOnPlate() {
+		if (conditions.isEmpty()) {
+			return false;
+		}
+
 		for (ConditionGroup condition : conditions) {
 			if (!condition.isOnPlate()) {
 				return false;
@@ -241,14 +258,13 @@ public class Experiment extends Observable {
 
 		return true;
 	}
-	
+
 	public boolean isMetadataComplete() {
-		return this.getNumRows() > 0 && 
-			this.getNumCols() > 0 && 
-			!this.getConditions().isEmpty() && 
-			this.eachSampleHasReplicates();
+		return this.getNumRows() > 0 && this.getNumCols() > 0
+				&& !this.getConditions().isEmpty()
+				&& this.eachSampleHasReplicates();
 	}
-	
+
 	private boolean eachSampleHasReplicates() {
 		for (ConditionGroup condition : this.getConditions()) {
 			if (condition.getSamples().isEmpty()) {
@@ -260,11 +276,12 @@ public class Experiment extends Observable {
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
-	public void placeReplicateAt(Replicate replicate, int plateId, int row, int col) {
+
+	public void placeReplicateAt(Replicate replicate, int plateId, int row,
+			int col) {
 		Objects.requireNonNull(replicate, "replicate can't be null");
 		validatePlateLocation(plateId, row, col);
 
@@ -275,27 +292,34 @@ public class Experiment extends Observable {
 					break;
 				}
 			}
-			
+
 			replicate.placeAtPlate(plateId, row, col);
 		}
 	}
-	
+
 	public Replicate getReplicateAt(int plateId, int row, int col) {
 		validatePlateLocation(plateId, row, col);
-		
+
 		for (Replicate replicate : this.getReplicates(plateId)) {
-			if (replicate.isPlacedAt(plateId, row, col)) 
+			if (replicate.isPlacedAt(plateId, row, col))
 				return replicate;
 		}
-		
+
 		return null;
 	}
 
 	private void validatePlateLocation(int plateId, int row, int col) {
-		if (plateId < 0) throw new IllegalArgumentException("plateId can't be < 0");
-		if (row < 0) throw new IllegalArgumentException("row can't be < 0");
-		else if (row > this.getNumRows()) throw new IllegalArgumentException("row can't be greater than the number of rows");
-		if (col < 0) throw new IllegalArgumentException("row can't be < 0");
-		else if (col > this.getNumCols()) throw new IllegalArgumentException("col can't be greater than the number of columns");
+		if (plateId < 0)
+			throw new IllegalArgumentException("plateId can't be < 0");
+		if (row < 0)
+			throw new IllegalArgumentException("row can't be < 0");
+		else if (row > this.getNumRows())
+			throw new IllegalArgumentException(
+					"row can't be greater than the number of rows");
+		if (col < 0)
+			throw new IllegalArgumentException("row can't be < 0");
+		else if (col > this.getNumCols())
+			throw new IllegalArgumentException(
+					"col can't be greater than the number of columns");
 	}
 }

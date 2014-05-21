@@ -5,14 +5,15 @@
 			<include src="header.zul" />
 			<vbox hflex="true" align="left">
 				<window title="Experiment" border="normal" closable="true"
-					apply="org.zkoss.bind.BindComposer"
-					binder="@init(queueName='experiment')"
+					apply="org.zkoss.bind.BindComposer" binder="@init(queueName='experiment')"
 					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')"
 					onClose="@command('exit')">
 					<tabbox>
 						<tabs>
 							<tab label="Data" />
-							<tab label="Design" visible="@load(vm.metadataCompleted)"/>
+							<tab label="Design" visible="@load(vm.metadataCompleted)" />
+							<!-- <tab label="File" visible="@load(vm.onPlate)"/> -->
+							<tab label="File" visible="true" />
 						</tabs>
 						<tabpanels>
 							<tabpanel>
@@ -20,6 +21,9 @@
 							</tabpanel>
 							<tabpanel>
 								<include src="experimentDesign.zul" />
+							</tabpanel>
+							<tabpanel>
+								<include src="experimentFile.zul" />
 							</tabpanel>
 						</tabpanels>
 					</tabbox>

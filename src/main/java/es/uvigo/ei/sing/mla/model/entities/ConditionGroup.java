@@ -26,7 +26,7 @@ public class ConditionGroup extends Observable {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="experimentId")
+	@JoinColumn(name = "experimentId")
 	private Experiment experiment;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "condition", cascade = CascadeType.ALL)
@@ -132,6 +132,10 @@ public class ConditionGroup extends Observable {
 	}
 
 	public boolean isOnPlate() {
+		if (samples.isEmpty()) {
+			return false;
+		}
+
 		for (Sample sample : samples) {
 			if (!sample.isOnPlate()) {
 				return false;

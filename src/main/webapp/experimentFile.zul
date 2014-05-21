@@ -1,0 +1,11 @@
+<zk>
+	<vlayout>
+		<button label="Upload" upload="true"
+			onUpload="@command('uploadFile', event = event)" />
+		<hlayout>
+			<label value="@load(vm.experiment.file eq null ? 'File not found' : vm.experiment.name.concat('.zip'))" />
+			<button label="Download" onClick="@command('downloadFile')" visible="@load(vm.experiment.file ne null)" />
+			<button label="Delete" onClick="@command('deleteFile')" visible="@load(vm.experiment.file ne null)" />
+		</hlayout>
+	</vlayout>
+</zk>
