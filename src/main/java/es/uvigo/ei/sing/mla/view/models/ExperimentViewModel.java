@@ -1,9 +1,11 @@
 package es.uvigo.ei.sing.mla.view.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.bind.BindUtils;
@@ -13,7 +15,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
@@ -45,6 +46,50 @@ public class ExperimentViewModel {
 	private ConditionGroup selectedCondition;
 	private Sample selectedSample;
 	private Replicate selectedReplicate;
+
+	private String uploadStatus = "";
+	private String directoryStructure = "";
+
+	private static final List<String> directories = Arrays.asList("Condition", "Sample", "Replicate");
+	private static final List<String> matches = generateMatches(directories);
+
+	private static List<String> generateMatches(List<String> directories) {
+		List<String> matches = new ArrayList<String>();
+		
+		matches.add("");
+
+		for (String directory : directories) {
+			List<String> newMatches = new ArrayList<String>();
+
+			for (String subset : matches) {
+				newMatches.add(subset);
+
+				String newSubset = subset;
+				newSubset += "\\/\\[" + directory + "\\]";
+				newMatches.add(newSubset);
+			}
+
+			matches = newMatches;
+		}
+		
+		matches.remove(0);
+		
+		for (int i = 0; i < matches.size(); i++) {
+			matches.set(i, matches.get(i).substring(2));
+		}
+		
+		List<String> matchesWithFile = new ArrayList<String>();
+		
+		for (int i = 0; i < matches.size(); i++) {
+			String current = matches.get(i);
+			
+			if(current.contains(directories.get(directories.size() - 1))) {
+				matchesWithFile.add(current);
+			}
+		}
+		
+		return matchesWithFile;
+	}
 
 	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
 		@Override
@@ -143,20 +188,21 @@ public class ExperimentViewModel {
 
 	public List<Integer> getPlateIds() {
 		final int replicates = this.experiment.countReplicates();
-		
+
 		if (replicates <= 1) {
 			return Collections.singletonList(1);
 		} else {
 			final int cols = this.experiment.getNumCols();
 			final int rows = this.experiment.getNumRows();
-			
-			final int numPlates = (int) Math.ceil((double) replicates / (double) (cols * rows));
-			
+
+			final int numPlates = (int) Math.ceil((double) replicates
+					/ (double) (cols * rows));
+
 			final List<Integer> plateIds = new ArrayList<>(numPlates);
 			for (int i = 1; i <= numPlates; i++) {
 				plateIds.add(i);
 			}
-			
+
 			return plateIds;
 		}
 	}
@@ -210,6 +256,23 @@ public class ExperimentViewModel {
 		this.selectedCondition = null;
 		this.selectedSample = null;
 		this.selectedReplicate = selectedReplicate;
+	}
+
+	public String getUploadStatus() {
+		return uploadStatus;
+	}
+
+	public void setUploadStatus(String uploadStatus) {
+		this.uploadStatus = uploadStatus;
+	}
+
+	public String getDirectoryStructure() {
+		return directoryStructure;
+	}
+
+	@NotifyChange("directoryStructureOk")
+	public void setDirectoryStructure(String directoryStructure) {
+		this.directoryStructure = directoryStructure;
 	}
 
 	@Command
@@ -296,23 +359,21 @@ public class ExperimentViewModel {
 		sample.removeReplicate(replicate);
 	}
 
+	public boolean isDirectoryStructureOk() {
+		for (String match : matches) {
+			if (Pattern.matches(match, this.directoryStructure)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	@Command
-	@NotifyChange("experiment")
 	public void uploadFile(@BindingParam("event") UploadEvent event) {
-		this.experiment.setFile(event.getMedia().getByteData());
-		this.save();
 	}
 
 	@Command
 	public void downloadFile() {
-		Filedownload.save(this.experiment.getFile(), "application/zip",
-				this.experiment.getName() + ".zip");
-	}
-
-	@Command
-	@NotifyChange("experiment")
-	public void deleteFile() {
-		this.experiment.setFile(null);
-		this.save();
 	}
 }
