@@ -1,0 +1,42 @@
+package es.uvigo.ei.sing.mla.view.models.io;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
+import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
+import es.uvigo.ei.sing.mla.model.entities.Replicate;
+import es.uvigo.ei.sing.mla.model.entities.Sample;
+
+public class SamplePathCreator extends AbstractPathCreator {
+	@Override
+	public void create(File baseDirectory, ExperimentFilter filter) {
+		for (Sample sample : filter.listSamples()) {
+			final File sampleDir = new File(baseDirectory, sample.getName());
+			sampleDir.mkdir();
+			
+			if (this.child != null) {
+				this.child.create(sampleDir, createFilter(sample));
+			}
+		}
+	}
+	
+	private static ExperimentFilter createFilter(final Sample sample) {
+		return new ExperimentFilter() {
+			@Override
+			public List<Sample> listSamples() {
+				return Collections.singletonList(sample);
+			}
+			
+			@Override
+			public List<Replicate> listReplicates() {
+				return sample.getReplicates();
+			}
+			
+			@Override
+			public List<ConditionGroup> listConditions() {
+				return Collections.singletonList(sample.getCondition());
+			}
+		};
+	}
+}

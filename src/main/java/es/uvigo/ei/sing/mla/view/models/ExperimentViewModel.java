@@ -1,11 +1,9 @@
 package es.uvigo.ei.sing.mla.view.models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.bind.BindUtils;
@@ -34,12 +32,17 @@ import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentService;
 import es.uvigo.ei.sing.mla.util.CellNameType;
 import es.uvigo.ei.sing.mla.view.converters.ColorUtils;
+import es.uvigo.ei.sing.mla.view.models.io.OutputSorter;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class ExperimentViewModel {
 	@Autowired
 	@WireVariable
 	private ExperimentService experimentService;
+	
+	@Autowired
+	@WireVariable
+	private OutputSorter outputSorter;
 
 	private Experiment experiment;
 
@@ -49,47 +52,6 @@ public class ExperimentViewModel {
 
 	private String uploadStatus = "";
 	private String directoryStructure = "";
-
-	private static final List<String> directories = Arrays.asList("Condition", "Sample", "Replicate");
-	private static final List<String> matches = generateMatches(directories);
-
-	private static List<String> generateMatches(List<String> directories) {
-		List<String> matches = new ArrayList<String>();
-		
-		matches.add("");
-
-		for (String directory : directories) {
-			List<String> newMatches = new ArrayList<String>();
-
-			for (String subset : matches) {
-				newMatches.add(subset);
-
-				String newSubset = subset;
-				newSubset += "\\/\\[" + directory + "\\]";
-				newMatches.add(newSubset);
-			}
-
-			matches = newMatches;
-		}
-		
-		matches.remove(0);
-		
-		for (int i = 0; i < matches.size(); i++) {
-			matches.set(i, matches.get(i).substring(2));
-		}
-		
-		List<String> matchesWithFile = new ArrayList<String>();
-		
-		for (int i = 0; i < matches.size(); i++) {
-			String current = matches.get(i);
-			
-			if(current.contains(directories.get(directories.size() - 1))) {
-				matchesWithFile.add(current);
-			}
-		}
-		
-		return matchesWithFile;
-	}
 
 	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
 		@Override
@@ -360,13 +322,14 @@ public class ExperimentViewModel {
 	}
 
 	public boolean isDirectoryStructureOk() {
-		for (String match : matches) {
-			if (Pattern.matches(match, this.directoryStructure)) {
-				return true;
-			}
-		}
-
-		return false;
+		return this.outputSorter.checkPath(this.directoryStructure);
+//		for (String match : matches) {
+//			if (Pattern.matches(match, this.directoryStructure)) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
 	}
 
 	@Command

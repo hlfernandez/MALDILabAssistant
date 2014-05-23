@@ -217,6 +217,11 @@ public class Experiment extends Observable {
 		return replicates;
 	}
 
+	public List<Sample> getSamples() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public void addCondition(ConditionGroup condition) {
 		Objects.requireNonNull(condition, "condition can't be null");
 
