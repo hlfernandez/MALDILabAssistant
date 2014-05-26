@@ -13,7 +13,7 @@ import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.Replicate;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 
-@Service
+@Service("outputSorter")
 public class BasicOutputSorter implements OutputSorter {
 	private static final List<String> directories = Arrays.asList("Condition", "Sample", "Replicate");
 
@@ -24,8 +24,8 @@ public class BasicOutputSorter implements OutputSorter {
 		pathCreator.create(outputDirectory, createFilterFromExperiment(experiment));
 	}
 
-	private ExperimentFilter createFilterFromExperiment(final Experiment experiment) {
-		return new ExperimentFilter() {
+	private ExperimentListFilter createFilterFromExperiment(final Experiment experiment) {
+		return new ExperimentListFilter() {
 			@Override
 			public List<Sample> listSamples() {
 				return experiment.getSamples();

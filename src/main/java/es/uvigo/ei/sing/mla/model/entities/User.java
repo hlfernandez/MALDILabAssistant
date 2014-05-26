@@ -1,5 +1,6 @@
 package es.uvigo.ei.sing.mla.model.entities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import es.uvigo.ei.sing.mla.util.Configuration;
 
 @Entity
 public class User {
@@ -24,6 +27,8 @@ public class User {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Experiment> experiments;
 
+	private String directory;
+
 	public User() {
 		this(null, null);
 	}
@@ -32,6 +37,8 @@ public class User {
 		this.login = login;
 		this.password = password;
 		this.experiments = new ArrayList<>();
+		this.directory = new File(Configuration.getInstance()
+				.getUsersDirectory(), login).getPath();
 	}
 
 	public String getLogin() {
@@ -39,7 +46,11 @@ public class User {
 	}
 
 	public void setLogin(String login) {
-		this.login = login;
+		if (!this.login.equals(login)) {
+			this.setDirectory(login);
+
+			this.login = login;
+		}
 	}
 
 	public String getPassword() {
@@ -52,6 +63,17 @@ public class User {
 
 	public List<Experiment> getExperiments() {
 		return Collections.unmodifiableList(this.experiments);
+	}
+
+	public File getDirectory() {
+		return new File(this.directory);
+	}
+
+	public void setDirectory(String login) {
+		File newDirectory = new File(this.directory);
+		newDirectory.renameTo(new File(login));
+
+		this.directory = newDirectory.getPath();
 	}
 
 	public boolean addExperiment(Experiment experiment) {

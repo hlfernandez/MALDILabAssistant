@@ -18,7 +18,7 @@ import org.zkoss.zul.Messagebox.ClickEvent;
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentService;
-import es.uvigo.ei.sing.mla.util.ExperimentFilter;
+import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class HomeViewModel {
@@ -26,7 +26,7 @@ public class HomeViewModel {
 	private ExperimentService experimentService;
 
 	private List<Experiment> experiments = null;
-	private ExperimentFilter filter = new ExperimentFilter(this.getUser());
+	private ExperimentSearchFilter filter = new ExperimentSearchFilter(this.getUser());
 
 	private User getUser() {
 		final Session session = Sessions.getCurrent(false);
@@ -47,7 +47,7 @@ public class HomeViewModel {
 		return new ListModelList<Experiment>(experiments);
 	}
 
-	public ExperimentFilter getFilter() {
+	public ExperimentSearchFilter getFilter() {
 		return this.filter;
 	}
 

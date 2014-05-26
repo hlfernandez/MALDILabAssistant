@@ -10,7 +10,7 @@ import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 public class SamplePathCreator extends AbstractPathCreator {
 	@Override
-	public void create(File baseDirectory, ExperimentFilter filter) {
+	public void create(File baseDirectory, ExperimentListFilter filter) {
 		for (Sample sample : filter.listSamples()) {
 			final File sampleDir = new File(baseDirectory, sample.getName());
 			sampleDir.mkdir();
@@ -21,8 +21,8 @@ public class SamplePathCreator extends AbstractPathCreator {
 		}
 	}
 	
-	private static ExperimentFilter createFilter(final Sample sample) {
-		return new ExperimentFilter() {
+	private static ExperimentListFilter createFilter(final Sample sample) {
+		return new ExperimentListFilter() {
 			@Override
 			public List<Sample> listSamples() {
 				return Collections.singletonList(sample);

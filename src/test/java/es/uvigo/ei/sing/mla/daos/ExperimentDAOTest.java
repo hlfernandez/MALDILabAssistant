@@ -18,7 +18,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
-import es.uvigo.ei.sing.mla.util.ExperimentFilter;
+import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -89,7 +89,7 @@ public class ExperimentDAOTest {
 	@Test
 	public void testExperimentDAOCanListFilter() {
 		User user = userDAO.get("pepe");
-		ExperimentFilter filter = new ExperimentFilter(user);
+		ExperimentSearchFilter filter = new ExperimentSearchFilter(user);
 		filter.setName("Experiment 2");
 
 		assertThat(experimentDAO.listFilter(filter).size()).isEqualTo(1);

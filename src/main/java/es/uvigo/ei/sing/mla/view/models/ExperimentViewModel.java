@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.GlobalCommandEvent;
@@ -31,6 +32,8 @@ import es.uvigo.ei.sing.mla.model.entities.Sample;
 import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentService;
 import es.uvigo.ei.sing.mla.util.CellNameType;
+import es.uvigo.ei.sing.mla.util.MediaPackager;
+import es.uvigo.ei.sing.mla.util.UploadStatusType;
 import es.uvigo.ei.sing.mla.view.converters.ColorUtils;
 import es.uvigo.ei.sing.mla.view.models.io.OutputSorter;
 
@@ -39,7 +42,7 @@ public class ExperimentViewModel {
 	@Autowired
 	@WireVariable
 	private ExperimentService experimentService;
-	
+
 	@Autowired
 	@WireVariable
 	private OutputSorter outputSorter;
@@ -50,8 +53,9 @@ public class ExperimentViewModel {
 	private Sample selectedSample;
 	private Replicate selectedReplicate;
 
-	private String uploadStatus = "";
-	private String directoryStructure = "";
+	private String uploadStatus = UploadStatusType.STOPPED.toString();
+	private boolean conditionChecked;
+	private boolean sampleChecked;
 
 	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
 		@Override
@@ -228,13 +232,20 @@ public class ExperimentViewModel {
 		this.uploadStatus = uploadStatus;
 	}
 
-	public String getDirectoryStructure() {
-		return directoryStructure;
+	public boolean isConditionChecked() {
+		return conditionChecked;
 	}
 
-	@NotifyChange("directoryStructureOk")
-	public void setDirectoryStructure(String directoryStructure) {
-		this.directoryStructure = directoryStructure;
+	public void setConditionChecked(boolean conditionChecked) {
+		this.conditionChecked = conditionChecked;
+	}
+
+	public boolean isSampleChecked() {
+		return sampleChecked;
+	}
+
+	public void setSampleChecked(boolean sampleChecked) {
+		this.sampleChecked = sampleChecked;
 	}
 
 	@Command
@@ -321,22 +332,38 @@ public class ExperimentViewModel {
 		sample.removeReplicate(replicate);
 	}
 
-	public boolean isDirectoryStructureOk() {
-		return this.outputSorter.checkPath(this.directoryStructure);
-//		for (String match : matches) {
-//			if (Pattern.matches(match, this.directoryStructure)) {
-//				return true;
-//			}
-//		}
-//
-//		return false;
-	}
-
 	@Command
 	public void uploadFile(@BindingParam("event") UploadEvent event) {
+		this.uploadStatus = UploadStatusType.IN_PROGRESS.toString();
+		
+		try {
+			MediaPackager.unpackageMedia(event.getMedia(), this.experiment.getUser().getDirectory());
+		} catch (InvalidFormatException e) {
+			this.uploadStatus = UploadStatusType.ERROR.toString();
+			
+			return;
+		}
+		
+		this.uploadStatus = UploadStatusType.FINISHED.toString();
 	}
 
 	@Command
 	public void downloadFile() {
+	}
+
+	public boolean isDirectoryStructureOk() {
+		String path = "";
+
+		if (this.conditionChecked) {
+			path += "[Condition]/";
+		}
+
+		if (this.sampleChecked) {
+			path += "[Sample]/";
+		}
+
+		path += "[Replicate]";
+
+		return this.outputSorter.checkPath(path);
 	}
 }

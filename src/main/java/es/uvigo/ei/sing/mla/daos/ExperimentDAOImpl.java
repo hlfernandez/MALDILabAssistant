@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
-import es.uvigo.ei.sing.mla.util.ExperimentFilter;
+import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
 
 @Repository
 public class ExperimentDAOImpl implements ExperimentDAO {
@@ -64,7 +64,7 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Experiment> listFilter(ExperimentFilter filter) {
+	public List<Experiment> listFilter(ExperimentSearchFilter filter) {
 		List<Experiment> filterExperiments = new ArrayList<Experiment>();
 		String name = filter.getName().toLowerCase();
 

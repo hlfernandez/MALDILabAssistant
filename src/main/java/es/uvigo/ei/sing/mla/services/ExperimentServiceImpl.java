@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import es.uvigo.ei.sing.mla.daos.ExperimentDAO;
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
-import es.uvigo.ei.sing.mla.util.ExperimentFilter;
+import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
 
 @Service("experimentService")
 @Scope(value = "singleton", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -44,7 +44,7 @@ public class ExperimentServiceImpl implements ExperimentService {
 	}
 
 	@Override
-	public List<Experiment> listFilter(ExperimentFilter filter) {
+	public List<Experiment> listFilter(ExperimentSearchFilter filter) {
 		return dao.listFilter(filter);
 	}
 

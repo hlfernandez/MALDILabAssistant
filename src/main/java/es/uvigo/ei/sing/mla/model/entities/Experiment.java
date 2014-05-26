@@ -16,7 +16,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -58,9 +57,6 @@ public class Experiment extends Observable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "experiment", cascade = CascadeType.ALL)
 	private List<ConditionGroup> conditions;
-
-	@Lob
-	private byte[] file;
 
 	public Experiment() {
 		this.name = "";
@@ -120,8 +116,9 @@ public class Experiment extends Observable {
 	}
 
 	public void setNumRows(int numRows) throws IllegalArgumentException {
-		if (numRows <= 0) throw new IllegalArgumentException("numRows can't be <= 0");
-		
+		if (numRows <= 0)
+			throw new IllegalArgumentException("numRows can't be <= 0");
+
 		this.numRows = numRows;
 	}
 
@@ -130,8 +127,9 @@ public class Experiment extends Observable {
 	}
 
 	public void setNumCols(int numCols) throws IllegalArgumentException {
-		if (numCols <= 0) throw new IllegalArgumentException("numCols can't be <= 0");
-		
+		if (numCols <= 0)
+			throw new IllegalArgumentException("numCols can't be <= 0");
+
 		this.numCols = numCols;
 	}
 
@@ -153,14 +151,6 @@ public class Experiment extends Observable {
 
 	public User getUser() {
 		return this.user;
-	}
-
-	public byte[] getFile() {
-		return file;
-	}
-
-	public void setFile(byte[] file) {
-		this.file = file;
 	}
 
 	public int countReplicates() {
@@ -218,8 +208,13 @@ public class Experiment extends Observable {
 	}
 
 	public List<Sample> getSamples() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Sample> samples = new ArrayList<Sample>();
+
+		for (ConditionGroup condition : this.conditions) {
+			samples.addAll(condition.getSamples());
+		}
+
+		return samples;
 	}
 
 	public void addCondition(ConditionGroup condition) {
@@ -270,8 +265,7 @@ public class Experiment extends Observable {
 
 	public boolean isMetadataComplete() {
 		return this.getNumRows() > 0 && this.getNumCols() > 0
-				&& this.getName() != null 
-				&& !this.getName().isEmpty()
+				&& this.getName() != null && !this.getName().isEmpty()
 				&& !this.getConditions().isEmpty()
 				&& this.eachSampleHasReplicates();
 	}
