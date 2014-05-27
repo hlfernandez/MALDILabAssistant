@@ -27,8 +27,6 @@ public class User {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Experiment> experiments;
 
-	private String directory;
-
 	public User() {
 		this(null, null);
 	}
@@ -37,8 +35,6 @@ public class User {
 		this.login = login;
 		this.password = password;
 		this.experiments = new ArrayList<>();
-		this.directory = new File(Configuration.getInstance()
-				.getUsersDirectory(), login).getPath();
 	}
 
 	public String getLogin() {
@@ -46,11 +42,7 @@ public class User {
 	}
 
 	public void setLogin(String login) {
-		if (!this.login.equals(login)) {
-			this.setDirectory(login);
-
-			this.login = login;
-		}
+		this.login = login;
 	}
 
 	public String getPassword() {
@@ -66,14 +58,7 @@ public class User {
 	}
 
 	public File getDirectory() {
-		return new File(this.directory);
-	}
-
-	public void setDirectory(String login) {
-		File newDirectory = new File(this.directory);
-		newDirectory.renameTo(new File(login));
-
-		this.directory = newDirectory.getPath();
+		return new File(Configuration.getInstance().getUsersDirectory(), this.login);
 	}
 
 	public boolean addExperiment(Experiment experiment) {
