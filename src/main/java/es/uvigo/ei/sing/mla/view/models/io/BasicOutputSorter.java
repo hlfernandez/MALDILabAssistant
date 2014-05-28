@@ -23,9 +23,47 @@ public class BasicOutputSorter implements OutputSorter {
 		
 		pathCreator.create(outputDirectory, createFilterFromExperiment(experiment));
 	}
+	
+	private PathCreator createPathCreatorFromRegex(String pathRegex) {
+		PathCreator replicatePathCreator = new ReplicatePathCreator();
+		
+		boolean hasSample = pathRegex.contains("Sample");
+		boolean hasCondition = pathRegex.contains("Condition");
+		
+		if(hasSample && hasCondition) {
+			PathCreator samplePathCreator = new SamplePathCreator();
+			samplePathCreator.setChild(replicatePathCreator);
+			
+			PathCreator conditionPathCreator = new ConditionGroupPathCreator();
+			conditionPathCreator.setChild(samplePathCreator);
+			
+			return conditionPathCreator;
+		}
+		
+		if(hasSample && !hasCondition) {
+			PathCreator samplePathCreator = new SamplePathCreator();
+			samplePathCreator.setChild(replicatePathCreator);
+			
+			return samplePathCreator;
+		}
+		
+		if(!hasSample && hasCondition) {
+			PathCreator conditionPathCreator = new ConditionGroupPathCreator();
+			conditionPathCreator.setChild(replicatePathCreator);
+			
+			return conditionPathCreator;
+		}
+		
+		return replicatePathCreator;
+	}
 
 	private ExperimentListFilter createFilterFromExperiment(final Experiment experiment) {
 		return new ExperimentListFilter() {
+			@Override
+			public List<ConditionGroup> listConditions() {
+				return experiment.getConditions();
+			}
+			
 			@Override
 			public List<Sample> listSamples() {
 				return experiment.getSamples();
@@ -35,16 +73,7 @@ public class BasicOutputSorter implements OutputSorter {
 			public List<Replicate> listReplicates() {
 				return experiment.getReplicates();
 			}
-			
-			@Override
-			public List<ConditionGroup> listConditions() {
-				return experiment.getConditions();
-			}
 		};
-	}
-
-	private PathCreator createPathCreatorFromRegex(String pathRegex) {
-		return null;
 	}
 
 	@Override

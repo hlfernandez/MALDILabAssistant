@@ -1,5 +1,6 @@
 package es.uvigo.ei.sing.mla.model.entities;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,6 +74,16 @@ public class ConditionGroup extends Observable {
 
 	public List<Sample> getSamples() {
 		return Collections.unmodifiableList(this.samples);
+	}
+
+	public List<Replicate> getReplicates() {
+		List<Replicate> replicates = new ArrayList<Replicate>();
+
+		for(Sample sample : this.getSamples()) {
+			replicates.addAll(sample.getReplicates());
+		}
+
+		return replicates;
 	}
 
 	public String getColor() {

@@ -1,10 +1,14 @@
 package es.uvigo.ei.sing.mla.view.models;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.bind.BindUtils;
@@ -14,6 +18,8 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.media.Media;
+import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
@@ -32,7 +38,8 @@ import es.uvigo.ei.sing.mla.model.entities.Sample;
 import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentService;
 import es.uvigo.ei.sing.mla.util.CellNameType;
-import es.uvigo.ei.sing.mla.util.MediaPackager;
+import es.uvigo.ei.sing.mla.util.Configuration;
+import es.uvigo.ei.sing.mla.util.DataPackager;
 import es.uvigo.ei.sing.mla.util.UploadStatusType;
 import es.uvigo.ei.sing.mla.view.converters.ColorUtils;
 import es.uvigo.ei.sing.mla.view.models.io.OutputSorter;
@@ -56,6 +63,7 @@ public class ExperimentViewModel {
 	private String uploadStatus = UploadStatusType.STOPPED.toString();
 	private boolean conditionChecked;
 	private boolean sampleChecked;
+	private String pathRegex;
 
 	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
 		@Override
@@ -67,20 +75,20 @@ public class ExperimentViewModel {
 				switch (globalEvent.getCommand()) {
 				case "selectedReplicateChanged":
 					ExperimentViewModel.this
-							.selectedReplicateChanged((Replicate) args
-									.get("replicate"));
+					.selectedReplicateChanged((Replicate) args
+							.get("replicate"));
 					break;
-				// case "selectedReplicatePlaced":
-				// ExperimentViewModel.this.selectedReplicatePlaced((Replicate)
-				// args.get("replicate"));
-				// break;
-				// case "onSampleSelected":
-				// this.selectedSample = (Sample) args.get("sample");
-				// break;
-				// case "onConditionSelected":
-				// this.selectedCondition = (ConditionGroup)
-				// args.get("condition");
-				// break;
+					// case "selectedReplicatePlaced":
+					// ExperimentViewModel.this.selectedReplicatePlaced((Replicate)
+					// args.get("replicate"));
+					// break;
+					// case "onSampleSelected":
+					// this.selectedSample = (Sample) args.get("sample");
+					// break;
+					// case "onConditionSelected":
+					// this.selectedCondition = (ConditionGroup)
+					// args.get("condition");
+					// break;
 				}
 			}
 		}
@@ -335,35 +343,51 @@ public class ExperimentViewModel {
 	@Command
 	public void uploadFile(@BindingParam("event") UploadEvent event) {
 		this.uploadStatus = UploadStatusType.IN_PROGRESS.toString();
-		
+
 		try {
-			MediaPackager.unpackageMedia(event.getMedia(), this.experiment.getUser().getDirectory());
+			DataPackager.unpackageData(event.getMedia(), this.experiment
+					.getUser().getDirectory());
 		} catch (InvalidFormatException e) {
 			this.uploadStatus = UploadStatusType.ERROR.toString();
-			
+
 			return;
 		}
-		
+
 		this.uploadStatus = UploadStatusType.FINISHED.toString();
 	}
 
 	@Command
 	public void downloadFile() {
+		this.outputSorter.sort(this.experiment, this.experiment.getUser()
+				.getDirectory(), this.pathRegex, Configuration.getInstance()
+				.getTmpDirectory());
+
+		File file = DataPackager.packageData();
+		
+		String fileExtension = FilenameUtils.getExtension(file.getName());
+		
+		try {
+			Filedownload.save(IOUtils.toByteArray(new FileInputStream(file)), "application/" + fileExtension, this.experiment.getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Configuration.getInstance().getTmpDirectory().delete();
 	}
 
 	public boolean isDirectoryStructureOk() {
-		String path = "";
+		this.pathRegex = "";
 
 		if (this.conditionChecked) {
-			path += "[Condition]/";
+			this.pathRegex += "[Condition]/";
 		}
 
 		if (this.sampleChecked) {
-			path += "[Sample]/";
+			this.pathRegex += "[Sample]/";
 		}
 
-		path += "[Replicate]";
+		this.pathRegex += "[Replicate]";
 
-		return this.outputSorter.checkPath(path);
+		return this.outputSorter.checkPath(this.pathRegex);
 	}
 }

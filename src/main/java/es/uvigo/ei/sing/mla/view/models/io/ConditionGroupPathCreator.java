@@ -8,34 +8,35 @@ import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
 import es.uvigo.ei.sing.mla.model.entities.Replicate;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 
-public class SamplePathCreator extends AbstractPathCreator {
+public class ConditionGroupPathCreator extends AbstractPathCreator {
 	@Override
 	public void create(File baseDirectory, ExperimentListFilter filter) {
-		for (Sample sample : filter.listSamples()) {
-			final File sampleDir = new File(baseDirectory, sample.getName());
+		for (ConditionGroup condition : filter.listConditions()) {
+			final File sampleDir = new File(baseDirectory, condition.getName());
 			sampleDir.mkdir();
 
 			if (this.child != null) {
-				this.child.create(sampleDir, createFilter(sample));
+				this.child.create(sampleDir, createFilter(condition));
 			}
 		}
 	}
 
-	private static ExperimentListFilter createFilter(final Sample sample) {
+	private static ExperimentListFilter createFilter(
+			final ConditionGroup condition) {
 		return new ExperimentListFilter() {
 			@Override
 			public List<ConditionGroup> listConditions() {
-				return Collections.singletonList(sample.getCondition());
+				return Collections.singletonList(condition);
 			}
 
 			@Override
 			public List<Sample> listSamples() {
-				return Collections.singletonList(sample);
+				return condition.getSamples();
 			}
 
 			@Override
 			public List<Replicate> listReplicates() {
-				return sample.getReplicates();
+				return condition.getReplicates();
 			}
 		};
 	}

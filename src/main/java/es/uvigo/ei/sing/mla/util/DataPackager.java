@@ -12,24 +12,20 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.zkoss.util.media.Media;
 
-public class MediaPackager {
-	public static void unpackageMedia(Media media, File outputDirectory)
+public class DataPackager {
+	public static void unpackageData(Media media, File outputDirectory)
 			throws InvalidFormatException {
 		if (media.isBinary()) {
-			String extension = media
-					.getName()
-					.toLowerCase()
-					.substring(
-							media.getName().toLowerCase().lastIndexOf(".") + 1);
-
 			File file = new File(media.getName());
 
-			switch (extension) {
+			switch (FilenameUtils.getExtension(media.getName())) {
 			case "zip":
 				try {
 					FileUtils.writeByteArrayToFile(file, media.getByteData());
@@ -69,29 +65,6 @@ public class MediaPackager {
 		}
 	}
 
-	private static void untarEntry(TarArchiveEntry entry, File outputDirectory) {
-		if (entry.isDirectory()) {
-			createDirectory(new File(outputDirectory, entry.getName()));
-			return;
-		}
-
-		File outputFile = new File(outputDirectory, entry.getName());
-
-		if (!outputFile.getParentFile().exists()) {
-			createDirectory(outputFile.getParentFile());
-		}
-
-		try (BufferedInputStream inputStream = new BufferedInputStream(
-				new FileInputStream(entry.getFile()));
-				BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(outputFile))) {
-
-			IOUtils.copy(inputStream, outputStream);
-		} catch (Exception e) {
-
-		}
-	}
-
 	private static void unzipEntry(ZipFile zipfile, ZipEntry entry,
 			File outputDirectory) throws IOException {
 		if (entry.isDirectory()) {
@@ -116,6 +89,33 @@ public class MediaPackager {
 			outputStream.close();
 			inputStream.close();
 		}
+	}
+
+	private static void untarEntry(TarArchiveEntry entry, File outputDirectory) {
+		if (entry.isDirectory()) {
+			createDirectory(new File(outputDirectory, entry.getName()));
+			return;
+		}
+
+		File outputFile = new File(outputDirectory, entry.getName());
+
+		if (!outputFile.getParentFile().exists()) {
+			createDirectory(outputFile.getParentFile());
+		}
+
+		try (BufferedInputStream inputStream = new BufferedInputStream(
+				new FileInputStream(entry.getFile()));
+				BufferedOutputStream outputStream = new BufferedOutputStream(
+						new FileOutputStream(outputFile))) {
+
+			IOUtils.copy(inputStream, outputStream);
+		} catch (Exception e) {
+
+		}
+	}
+	
+	public static File packageData() {
+		return null;
 	}
 
 	private static void createDirectory(File dir) {
