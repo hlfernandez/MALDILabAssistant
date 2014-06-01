@@ -19,42 +19,26 @@ public class BasicOutputSorter implements OutputSorter {
 
 	@Override
 	public void sort(Experiment experiment, File datasetDirectory, String pathRegex, File outputDirectory) {
-		PathCreator pathCreator = createPathCreatorFromRegex(pathRegex);
+		PathCreator pathCreator = createPathCreatorFromRegex(experiment, pathRegex);
 		
 		pathCreator.create(outputDirectory, createFilterFromExperiment(experiment));
 	}
 	
-	private PathCreator createPathCreatorFromRegex(String pathRegex) {
-		PathCreator replicatePathCreator = new ReplicatePathCreator();
+	private PathCreator createPathCreatorFromRegex(Experiment experiment, String pathRegex) {
+		PathCreator pathCreator = new ReplicatePathCreator(experiment);
 		
 		boolean hasSample = pathRegex.contains("Sample");
 		boolean hasCondition = pathRegex.contains("Condition");
 		
-		if(hasSample && hasCondition) {
-			PathCreator samplePathCreator = new SamplePathCreator();
-			samplePathCreator.setChild(replicatePathCreator);
-			
-			PathCreator conditionPathCreator = new ConditionGroupPathCreator();
-			conditionPathCreator.setChild(samplePathCreator);
-			
-			return conditionPathCreator;
+		if (hasSample) {
+			pathCreator = new SamplePathCreator(pathCreator);
 		}
 		
-		if(hasSample && !hasCondition) {
-			PathCreator samplePathCreator = new SamplePathCreator();
-			samplePathCreator.setChild(replicatePathCreator);
-			
-			return samplePathCreator;
+		if (hasCondition) {
+			pathCreator = new ConditionGroupPathCreator(pathCreator);
 		}
 		
-		if(!hasSample && hasCondition) {
-			PathCreator conditionPathCreator = new ConditionGroupPathCreator();
-			conditionPathCreator.setChild(replicatePathCreator);
-			
-			return conditionPathCreator;
-		}
-		
-		return replicatePathCreator;
+		return pathCreator;
 	}
 
 	private ExperimentListFilter createFilterFromExperiment(final Experiment experiment) {

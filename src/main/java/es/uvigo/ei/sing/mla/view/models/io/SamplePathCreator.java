@@ -9,6 +9,14 @@ import es.uvigo.ei.sing.mla.model.entities.Replicate;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 public class SamplePathCreator extends AbstractPathCreator {
+	public SamplePathCreator() {
+		super();
+	}
+
+	public SamplePathCreator(PathCreator child) {
+		super(child);
+	}
+
 	@Override
 	public void create(File baseDirectory, ExperimentListFilter filter) {
 		for (Sample sample : filter.listSamples()) {

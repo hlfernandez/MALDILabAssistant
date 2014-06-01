@@ -9,6 +9,14 @@ import es.uvigo.ei.sing.mla.model.entities.Replicate;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 public class ConditionGroupPathCreator extends AbstractPathCreator {
+	public ConditionGroupPathCreator() {
+		super();
+	}
+
+	public ConditionGroupPathCreator(PathCreator child) {
+		super(child);
+	}
+
 	@Override
 	public void create(File baseDirectory, ExperimentListFilter filter) {
 		for (ConditionGroup condition : filter.listConditions()) {

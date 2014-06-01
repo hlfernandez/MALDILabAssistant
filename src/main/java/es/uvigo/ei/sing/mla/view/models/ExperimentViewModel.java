@@ -18,7 +18,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.util.media.Media;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -75,20 +74,20 @@ public class ExperimentViewModel {
 				switch (globalEvent.getCommand()) {
 				case "selectedReplicateChanged":
 					ExperimentViewModel.this
-					.selectedReplicateChanged((Replicate) args
-							.get("replicate"));
+							.selectedReplicateChanged((Replicate) args
+									.get("replicate"));
 					break;
-					// case "selectedReplicatePlaced":
-					// ExperimentViewModel.this.selectedReplicatePlaced((Replicate)
-					// args.get("replicate"));
-					// break;
-					// case "onSampleSelected":
-					// this.selectedSample = (Sample) args.get("sample");
-					// break;
-					// case "onConditionSelected":
-					// this.selectedCondition = (ConditionGroup)
-					// args.get("condition");
-					// break;
+				// case "selectedReplicatePlaced":
+				// ExperimentViewModel.this.selectedReplicatePlaced((Replicate)
+				// args.get("replicate"));
+				// break;
+				// case "onSampleSelected":
+				// this.selectedSample = (Sample) args.get("sample");
+				// break;
+				// case "onConditionSelected":
+				// this.selectedCondition = (ConditionGroup)
+				// args.get("condition");
+				// break;
 				}
 			}
 		}
@@ -347,6 +346,7 @@ public class ExperimentViewModel {
 		try {
 			DataPackager.unpackageData(event.getMedia(), this.experiment
 					.getUser().getDirectory());
+
 		} catch (InvalidFormatException e) {
 			this.uploadStatus = UploadStatusType.ERROR.toString();
 
@@ -358,20 +358,24 @@ public class ExperimentViewModel {
 
 	@Command
 	public void downloadFile() {
-		this.outputSorter.sort(this.experiment, this.experiment.getUser()
-				.getDirectory(), this.pathRegex, Configuration.getInstance()
-				.getTmpDirectory());
+		File tmpDir = Configuration.getInstance().getTmpDirectory();
 
-		File file = DataPackager.packageData();
+		this.outputSorter.sort(this.experiment, this.experiment.getUser()
+				.getDirectory(), this.pathRegex, tmpDir);
 		
-		String fileExtension = FilenameUtils.getExtension(file.getName());
-		
+		File experimentDir = new File(this.experiment.getUser().getDirectory(), "exp1");
+
+		File zip = DataPackager.zipData(experimentDir, "tmp");
+
+		String fileExtension = FilenameUtils.getExtension(zip.getName());
+
 		try {
-			Filedownload.save(IOUtils.toByteArray(new FileInputStream(file)), "application/" + fileExtension, this.experiment.getName());
+			Filedownload.save(IOUtils.toByteArray(new FileInputStream(zip)),
+					"application/" + fileExtension, this.experiment.getName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		Configuration.getInstance().getTmpDirectory().delete();
 	}
 

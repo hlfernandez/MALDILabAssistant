@@ -10,9 +10,11 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.FileNameUtil;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -45,16 +47,29 @@ public class DataPackager {
 			case "tar":
 				try {
 					FileUtils.writeByteArrayToFile(file, media.getByteData());
-					TarArchiveInputStream tais = new TarArchiveInputStream(
-							new FileInputStream(file));
+					try (TarArchiveInputStream myTarFile = new TarArchiveInputStream(
+							new FileInputStream(file))) {
+						TarArchiveEntry entry = null;
 
-					TarArchiveEntry entry;
+						while ((entry = myTarFile.getNextTarEntry()) != null) {
+							if (entry.isDirectory()) {
+								createDirectory(new File(outputDirectory,
+										entry.getName()));
+							} else {
+								byte[] content = new byte[(int) entry.getSize()];
+								myTarFile.read(content, 0, content.length);
 
-					while ((entry = tais.getNextTarEntry()) != null) {
-						untarEntry(entry, outputDirectory);
+								File entryFile = new File(outputDirectory,
+										entry.getName());
+								try (FileOutputStream outputFile = new FileOutputStream(
+										entryFile)) {
+									IOUtils.write(content, outputFile);
+								}
+							}
+						}
 					}
-
-				} catch (IOException e1) {
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 
 				break;
@@ -91,31 +106,35 @@ public class DataPackager {
 		}
 	}
 
-	private static void untarEntry(TarArchiveEntry entry, File outputDirectory) {
-		if (entry.isDirectory()) {
-			createDirectory(new File(outputDirectory, entry.getName()));
-			return;
-		}
+	public static File zipData(File inputDir, String fileName) {
+		File file = new File("tmp.zip");
 
-		File outputFile = new File(outputDirectory, entry.getName());
+		try (ArchiveOutputStream zipStream = new ArchiveStreamFactory()
+		.createArchiveOutputStream(ArchiveStreamFactory.ZIP,
+				new FileOutputStream(file))) {
 
-		if (!outputFile.getParentFile().exists()) {
-			createDirectory(outputFile.getParentFile());
-		}
+			zipEntry(zipStream, inputDir.listFiles());
 
-		try (BufferedInputStream inputStream = new BufferedInputStream(
-				new FileInputStream(entry.getFile()));
-				BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(outputFile))) {
-
-			IOUtils.copy(inputStream, outputStream);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
+
+		return file;
 	}
-	
-	public static File packageData() {
-		return null;
+
+	private static void zipEntry(ArchiveOutputStream zipStream, File[] files)
+			throws Exception {
+		for (File file : files) {
+			zipStream.putArchiveEntry(new ZipArchiveEntry(file, file.getName()));
+
+			if (!file.isDirectory()) {
+				IOUtils.copy(new FileInputStream(file), zipStream);
+			} else {
+				zipEntry(zipStream, file.listFiles());
+			}
+
+			zipStream.closeArchiveEntry();
+		}
 	}
 
 	private static void createDirectory(File dir) {
