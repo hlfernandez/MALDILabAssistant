@@ -1,6 +1,7 @@
 package es.uvigo.ei.sing.mla.view.models.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,14 +19,14 @@ public class BasicOutputSorter implements OutputSorter {
 	private static final List<String> directories = Arrays.asList("Condition", "Sample", "Replicate");
 
 	@Override
-	public void sort(Experiment experiment, File datasetDirectory, String pathRegex, File outputDirectory) {
-		PathCreator pathCreator = createPathCreatorFromRegex(experiment, pathRegex);
+	public void sort(Experiment experiment, File datasetDirectory, String pathRegex, File outputDirectory) throws IOException {
+		PathCreator pathCreator = createPathCreatorFromRegex(pathRegex, experiment, datasetDirectory);
 		
 		pathCreator.create(outputDirectory, createFilterFromExperiment(experiment));
 	}
 	
-	private PathCreator createPathCreatorFromRegex(Experiment experiment, String pathRegex) {
-		PathCreator pathCreator = new ReplicatePathCreator(experiment);
+	private PathCreator createPathCreatorFromRegex(String pathRegex, Experiment experiment, File outputDirectory) {
+		PathCreator pathCreator = new ReplicatePathCreator(experiment, outputDirectory);
 		
 		boolean hasSample = pathRegex.contains("Sample");
 		boolean hasCondition = pathRegex.contains("Condition");

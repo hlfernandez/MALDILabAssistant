@@ -1,4 +1,4 @@
-package es.uvigo.ei.sing.mla.util;
+package es.uvigo.ei.sing.mla.services;
 
 import es.uvigo.ei.sing.mla.model.entities.User;
 

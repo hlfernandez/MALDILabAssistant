@@ -2,14 +2,15 @@ package es.uvigo.ei.sing.mla.view.models;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.GlobalCommandEvent;
@@ -39,7 +40,6 @@ import es.uvigo.ei.sing.mla.services.ExperimentService;
 import es.uvigo.ei.sing.mla.util.CellNameType;
 import es.uvigo.ei.sing.mla.util.Configuration;
 import es.uvigo.ei.sing.mla.util.DataPackager;
-import es.uvigo.ei.sing.mla.util.UploadStatusType;
 import es.uvigo.ei.sing.mla.view.converters.ColorUtils;
 import es.uvigo.ei.sing.mla.view.models.io.OutputSorter;
 
@@ -62,7 +62,6 @@ public class ExperimentViewModel {
 	private String uploadStatus = UploadStatusType.STOPPED.toString();
 	private boolean conditionChecked;
 	private boolean sampleChecked;
-	private String pathRegex;
 
 	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
 		@Override
@@ -340,58 +339,87 @@ public class ExperimentViewModel {
 	}
 
 	@Command
+	@NotifyChange("uploadStatus")
 	public void uploadFile(@BindingParam("event") UploadEvent event) {
 		this.uploadStatus = UploadStatusType.IN_PROGRESS.toString();
 
 		try {
-			DataPackager.unpackageData(event.getMedia(), this.experiment
-					.getUser().getDirectory());
+			final File userDir = this.experiment.getUser().getDirectory();
+			
+			FileUtils.cleanDirectory(userDir);
+			
+			DataPackager.unpackageData(event.getMedia(), userDir);
 
-		} catch (InvalidFormatException e) {
+			this.uploadStatus = UploadStatusType.FINISHED.toString();
+		} catch (Exception e) {
 			this.uploadStatus = UploadStatusType.ERROR.toString();
-
-			return;
 		}
-
-		this.uploadStatus = UploadStatusType.FINISHED.toString();
 	}
 
 	@Command
 	public void downloadFile() {
-		File tmpDir = Configuration.getInstance().getTmpDirectory();
-
-		this.outputSorter.sort(this.experiment, this.experiment.getUser()
-				.getDirectory(), this.pathRegex, tmpDir);
+		File tmpDir = null;
+		File zipFile = null;
 		
-		File experimentDir = new File(this.experiment.getUser().getDirectory(), "exp1");
-
-		File zip = DataPackager.zipData(experimentDir, "tmp");
-
-		String fileExtension = FilenameUtils.getExtension(zip.getName());
-
 		try {
-			Filedownload.save(IOUtils.toByteArray(new FileInputStream(zip)),
-					"application/" + fileExtension, this.experiment.getName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			Configuration.getInstance().getTmpDirectory().mkdirs();
+			tmpDir = File.createTempFile(
+				this.getExperiment().getUser().getLogin(), "down", 
+				Configuration.getInstance().getTmpDirectory()
+			);
+			tmpDir.delete();
+			tmpDir.mkdir();
+			
+			zipFile = File.createTempFile("mla", "zip");
 
-		Configuration.getInstance().getTmpDirectory().delete();
+			final File userDir = this.experiment.getUser().getDirectory();
+			
+			System.out.println(this.getPathRegex());
+			this.outputSorter.sort(this.experiment, userDir, this.getPathRegex(), tmpDir);
+			
+			File zip = DataPackager.zipData(tmpDir, zipFile);
+	
+			String fileExtension = FilenameUtils.getExtension(zip.getName());
+	
+			try (FileInputStream zipFIS = new FileInputStream(zip)) {
+				Filedownload.save(IOUtils.toByteArray(zipFIS), 
+					"application/" + fileExtension, 
+					this.experiment.getName() + ".zip"
+				);
+			}
+		} catch (IOException io) {
+			io.printStackTrace();
+			Messagebox.show("Error compressing data", "Download Error", Messagebox.OK, Messagebox.EXCLAMATION);
+		} finally {
+			if (tmpDir != null && tmpDir.exists())
+				try {
+					FileUtils.deleteDirectory(tmpDir);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			
+			if (zipFile != null && zipFile.exists())
+				zipFile.delete();
+		}
 	}
 
 	public boolean isDirectoryStructureOk() {
-		this.pathRegex = "";
+		return this.outputSorter.checkPath(this.getPathRegex());
+	}
+
+	private String getPathRegex() {
+		String pathRegex = "";
 
 		if (this.conditionChecked) {
-			this.pathRegex += "[Condition]/";
+			pathRegex += "[Condition]/";
 		}
 
 		if (this.sampleChecked) {
-			this.pathRegex += "[Sample]/";
+			pathRegex += "[Sample]/";
 		}
 
-		this.pathRegex += "[Replicate]";
-
-		return this.outputSorter.checkPath(this.pathRegex);
+		pathRegex += "[Replicate]";
+		
+		return pathRegex;
 	}
 }

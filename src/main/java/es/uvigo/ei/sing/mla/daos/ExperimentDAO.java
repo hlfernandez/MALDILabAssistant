@@ -4,7 +4,7 @@ import java.util.List;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
-import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
+import es.uvigo.ei.sing.mla.services.ExperimentSearchFilter;
 
 public interface ExperimentDAO {
 	public Experiment add(Experiment experiment);

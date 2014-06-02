@@ -7,26 +7,33 @@
 				<window title="Experiment" border="normal" closable="true"
 					apply="org.zkoss.bind.BindComposer" binder="@init(queueName='experiment')"
 					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')"
-					onClose="@command('exit')">
-					<tabbox>
-						<tabs>
-							<tab label="Data" />
-							<tab label="Design" visible="@load(vm.metadataCompleted)" />
-							<!-- <tab label="File" visible="@load(vm.experiment.onPlate)"/> -->
-							<tab label="File" />
-						</tabs>
-						<tabpanels>
-							<tabpanel>
-								<include src="experimentData.zul" />
-							</tabpanel>
-							<tabpanel>
-								<include src="experimentDesign.zul" />
-							</tabpanel>
-							<tabpanel>
-								<include src="experimentFile.zul" />
-							</tabpanel>
-						</tabpanels>
-					</tabbox>
+					onClose="@command('exit')"
+				>
+					<vlayout>
+						<tabbox>
+							<tabs>
+								<tab label="Data" />
+								<tab label="Design" visible="@load(vm.metadataCompleted)" />
+								<!-- <tab label="File" visible="@load(vm.experiment.onPlate)"/> -->
+								<tab label="File" />
+							</tabs>
+							<tabpanels>
+								<tabpanel>
+									<include src="experimentData.zul" />
+								</tabpanel>
+								<tabpanel>
+									<include src="experimentDesign.zul" />
+								</tabpanel>
+								<tabpanel>
+									<include src="experimentFile.zul" />
+								</tabpanel>
+							</tabpanels>
+						</tabbox>
+						<hbox pack="end" hflex="true">
+							<button label="Save" onClick="@command('save')" />
+							<button label="Reset" onClick="@command('reset')" />
+						</hbox>
+					</vlayout>
 				</window>
 			</vbox>
 			<include src="footer.zul" />

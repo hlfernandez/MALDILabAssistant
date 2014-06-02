@@ -110,10 +110,5 @@
 				</template>
 			</rows>
 		</grid>
-
-		<hbox pack="end" hflex="true">
-			<button label="Save" onClick="@command('save')" />
-			<button label="Reset" onClick="@command('reset')" />
-		</hbox>
 	</vlayout>
 </zk>

@@ -1,6 +1,7 @@
 package es.uvigo.ei.sing.mla.view.models.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class ConditionGroupPathCreator extends AbstractPathCreator {
 	}
 
 	@Override
-	public void create(File baseDirectory, ExperimentListFilter filter) {
+	public void create(File baseDirectory, ExperimentListFilter filter) throws IOException {
 		for (ConditionGroup condition : filter.listConditions()) {
 			final File sampleDir = new File(baseDirectory, condition.getName());
 			sampleDir.mkdir();

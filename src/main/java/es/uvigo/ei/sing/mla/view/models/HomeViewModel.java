@@ -17,8 +17,8 @@ import org.zkoss.zul.Messagebox.ClickEvent;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
+import es.uvigo.ei.sing.mla.services.ExperimentSearchFilter;
 import es.uvigo.ei.sing.mla.services.ExperimentService;
-import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class HomeViewModel {

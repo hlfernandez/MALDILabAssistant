@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
-import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
+import es.uvigo.ei.sing.mla.services.ExperimentSearchFilter;
 
 @Repository
 public class ExperimentDAOImpl implements ExperimentDAO {

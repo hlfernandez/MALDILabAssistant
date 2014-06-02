@@ -1,6 +1,6 @@
-package es.uvigo.ei.sing.mla.util;
+package es.uvigo.ei.sing.mla.view.models;
 
-public enum UploadStatusType {
+enum UploadStatusType {
 	STOPPED(""),
 	IN_PROGRESS("Uploading in progress, please wait..."),
 	FINISHED("Uploading finished"),

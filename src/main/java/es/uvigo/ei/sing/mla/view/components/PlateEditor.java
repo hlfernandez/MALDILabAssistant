@@ -172,19 +172,6 @@ public class PlateEditor extends Spreadsheet {
 	
 	private boolean isSelected(Replicate replicate) {
 		return this.getSelectedReplicates().contains(replicate);
-//		if (this.selectedReplicate != null) {
-//			return this.selectedReplicate.equals(replicate);
-//		} else if (this.selectedSample != null) {
-//			return this.selectedSample.getReplicates().contains(replicate);
-//		} else if (this.selectedCondition != null) {
-//			for (Sample sample : this.selectedCondition.getSamples()) {
-//				if (sample.getReplicates().contains(replicate)) {
-//					return true;
-//				}
-//			}
-//		}
-//		
-//		return false;
 	}
 
 	private void cleanPlate() {
@@ -213,7 +200,6 @@ public class PlateEditor extends Spreadsheet {
 		newStyle.setFillPattern(FillPattern.SOLID_FOREGROUND);
 		
 		if (selected) {
-			System.out.println(ColorUtils.getBestContrast(color));
 			final Color borderColor = styleHelper.createColorFromHtmlColor(
 				ColorUtils.getBestContrast(color)
 			);
@@ -231,79 +217,16 @@ public class PlateEditor extends Spreadsheet {
 		range.setCellStyle(newStyle);	
 	}
 
-	private StringBuilder inflate(CellNameType type, StringBuilder str) {
-		char a = (type == CellNameType.LOWERCASE) ? 'a' : 'A';
-		char z = (type == CellNameType.LOWERCASE) ? 'z' : 'Z';
-
-		int end = str.length() - 1;
-
-		if (str.charAt(0) == z) {
-			for (int i = 0; i < str.length(); ++i) {
-				str.setCharAt(i, a);
-			}
-
-			return new StringBuilder(str + Character.toString(a));
-		}
-
-		if (str.charAt(end) == z) {
-			String inflated = inflate(type,
-					new StringBuilder(str.substring(0, end)))
-					+ Character.toString(a);
-
-			return new StringBuilder(inflated);
-		}
-
-		char next = str.charAt(end);
-		++next;
-		str.setCharAt(end, next);
-
-		return str;
-	}
-
 	private String createTitles(CellNameType type, int num) {
-		StringBuilder titles = new StringBuilder();
-
-		switch (type) {
-		case LOWERCASE:
-			char c = 'a';
-			StringBuilder chars = new StringBuilder();
-			chars.append(c);
-
-			for (int i = 1; i <= num; ++i) {
-				chars.setCharAt(chars.length() - 1, c);
-				titles.append(chars + ",");
-
-				if (c == 'z') {
-					chars = inflate(type, chars);
-					c = 'a';
-				} else {
-					++c;
-				}
-			}
-			break;
-		case UPPERCASE:
-			char C = 'A';
-			StringBuilder CHARS = new StringBuilder();
-			CHARS.append(C);
-
-			for (int i = 1; i <= num; ++i) {
-				CHARS.setCharAt(CHARS.length() - 1, C);
-				titles.append(CHARS + ",");
-
-				if (C == 'Z') {
-					CHARS = inflate(type, CHARS);
-					C = 'A';
-				} else {
-					++C;
-				}
-			}
-			break;
-		default:
-			for (int i = 1; i <= num; ++i) {
-				titles.append(i + ",");
-			}
+		final String[] titles = type.createLabels(num);
+		final StringBuilder sb = new StringBuilder();
+		
+		for (String title : titles) {
+			if (sb.length() > 0) sb.append(',');
+			
+			sb.append(title);
 		}
-
-		return titles.substring(0, titles.length() - 1);
+		
+		return sb.toString();
 	}
 }

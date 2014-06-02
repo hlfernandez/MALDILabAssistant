@@ -18,7 +18,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
 import es.uvigo.ei.sing.mla.model.entities.User;
-import es.uvigo.ei.sing.mla.util.ExperimentSearchFilter;
+import es.uvigo.ei.sing.mla.services.ExperimentSearchFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional

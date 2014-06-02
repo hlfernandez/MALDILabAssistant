@@ -1,26 +1,5 @@
 <?component name="plateeditor" class="es.uvigo.ei.sing.mla.view.components.PlateEditor"?>
 <zk>
-	<style>
-        .odd-condition {
-            background-color: #177FBF !important;
-            color: black;
-        }
-        .odd-condition:hover {
-            color: black;
-        }
-        .even-condition {
-            background-color: #3D8EBF;
-            color: black;
-        }
-        .even-condition:hover {
-            color: black;
-        }
-        
-        .z-row .z-detail-outer {
-        	padding: 0px !important;
-        }
-    </style>
-    <!-- Sample: 66D8F2, 96E1F2 - Replicate: 99F2F8, CBF5F8 -->
 	<hlayout>
 		<grid width="240px" model="@load(vm.model)">
 			<columns>
@@ -78,7 +57,7 @@
 			</rows>
 		</grid>
 		
-		<tabbox width="720px" height="720px">
+		<tabbox width="720px" height="480px">
 			<tabs children="@load(vm.plateNames)">
 				<template name="children" var="plateName">
 					<tab label="@load(plateName)" />

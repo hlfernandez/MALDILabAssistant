@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -106,34 +107,35 @@ public class DataPackager {
 		}
 	}
 
-	public static File zipData(File inputDir, String fileName) {
-		File file = new File("tmp.zip");
-
-		try (ArchiveOutputStream zipStream = new ArchiveStreamFactory()
-		.createArchiveOutputStream(ArchiveStreamFactory.ZIP,
-				new FileOutputStream(file))) {
-
-			zipEntry(zipStream, inputDir.listFiles());
-
-		} catch (Exception e) {
-			e.printStackTrace();
+	public static File zipData(File inputDir, File zipFile) throws IOException {
+		File file = File.createTempFile("mla", "zip");
+		final ArchiveStreamFactory factory = new ArchiveStreamFactory();
+		
+		try (ArchiveOutputStream zipStream = factory.createArchiveOutputStream(ArchiveStreamFactory.ZIP, new FileOutputStream(file))) {
+			zipEntry(zipStream, inputDir.listFiles(), "");
+		} catch (ArchiveException ae) {
+			throw new IOException(ae.getMessage(), ae);
+		} catch (IOException e) {
+			throw e;
 		}
 
 		return file;
 	}
 
-	private static void zipEntry(ArchiveOutputStream zipStream, File[] files)
-			throws Exception {
+	private static void zipEntry(ArchiveOutputStream zipStream, File[] files, String path)
+	throws IOException {
 		for (File file : files) {
-			zipStream.putArchiveEntry(new ZipArchiveEntry(file, file.getName()));
-
-			if (!file.isDirectory()) {
-				IOUtils.copy(new FileInputStream(file), zipStream);
+			if (file.isDirectory()) {
+				zipEntry(zipStream, file.listFiles(), path + "/" + file.getName());
 			} else {
-				zipEntry(zipStream, file.listFiles());
+				zipStream.putArchiveEntry(new ZipArchiveEntry(file, path + "/" + file.getName()));
+				
+				try (FileInputStream fis = new FileInputStream(file)) {
+					IOUtils.copy(fis, zipStream);
+				}
+				
+				zipStream.closeArchiveEntry();
 			}
-
-			zipStream.closeArchiveEntry();
 		}
 	}
 
