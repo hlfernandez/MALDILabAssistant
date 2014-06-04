@@ -1,17 +1,12 @@
-<hbox hflex="true" align="center" pack="center"
-	style="color: #2980b9;  font-family: sans;">
-	<a href="http://sing.ei.uvigo.es/" style="color: inherit; text-decoration: none;">2014 Sing</a>
-	<space spacing="20px" />
+<hbox hflex="true" align="center" pack="center" spacing="20px" style="color: #2980b9;  font-family: sans;">
+	<a href="http://sing.ei.uvigo.es/" target="_blank" style="color: inherit; text-decoration: none;">2014 SING</a>
 	<a href="" onClick="winAbout.doModal()" style="color: inherit; text-decoration: none;">About us</a>
-	<space spacing="20px" />
-	<a href="https://github.com/mirkeet/MALDILabAssistant" style="color: inherit; text-decoration: none;">GitHub
-	</a>
-	<space spacing="20px" />
-	<a href="" onClick="@global-command('footerDocClicked')" style="color: inherit; text-decoration: none;">Documentation</a>
+	<a href="https://github.com/mirkeet/MALDILabAssistant" target="_blank" style="color: inherit; text-decoration: none;">GitHub</a>
+	<a href="doc/mla.pdf" style="color: inherit; text-decoration: none;">Documentation</a>
 
 	<window id="winAbout" visible="false" closable="true"
 		action="show: slideDown;hide: slideUp" position="center"
-		contentStyle="margin: 0px; padding: 0px" height="450px" width="350px"
+		contentStyle="margin: 0px; padding: 0px" height="300px" width="500px"
 		title="About" border="normal" onClose="self.setVisible(false); event.stopPropagation()">
 
 		<iframe hflex="true" vflex="true" src="/about.html" />

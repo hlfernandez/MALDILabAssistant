@@ -2,7 +2,6 @@ package es.uvigo.ei.sing.mla.view.models;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,20 +114,6 @@ public class ExperimentViewModel {
 			this.selectedReplicate = replicate;
 			BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
 		}
-	}
-
-	@GlobalCommand
-	public void footerDocClicked() {
-		System.out.println("METHOD");
-//		try (FileInputStream fis = new FileInputStream(new File("src/main/resources/mla.pdf"))) {
-//			Filedownload.save(IOUtils.toByteArray(fis), "application/pdf", "mla.pdf");
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//			throw new RuntimeException("File not found");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			throw new RuntimeException("File not found");
-//		}
 	}
 
 	public boolean isMetadataCompleted() {
