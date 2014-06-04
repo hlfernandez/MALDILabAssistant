@@ -41,6 +41,8 @@ public class DataPackager {
 					}
 
 				} catch (IOException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("Could not write byte array to file");
 				}
 
 				break;
@@ -71,6 +73,7 @@ public class DataPackager {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
+					throw new RuntimeException("Could not write byte array to file");
 				}
 
 				break;

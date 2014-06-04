@@ -14,8 +14,7 @@
 							<tabs>
 								<tab label="Data" />
 								<tab label="Design" visible="@load(vm.metadataCompleted)" />
-								<!-- <tab label="File" visible="@load(vm.experiment.onPlate)"/> -->
-								<tab label="File" />
+								<tab label="File" visible="@load(vm.experiment.onPlate)"/>
 							</tabs>
 							<tabpanels>
 								<tabpanel>

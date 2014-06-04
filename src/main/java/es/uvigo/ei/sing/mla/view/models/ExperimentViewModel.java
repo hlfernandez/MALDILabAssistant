@@ -2,6 +2,7 @@ package es.uvigo.ei.sing.mla.view.models;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,6 +63,8 @@ public class ExperimentViewModel {
 	private String uploadStatus = UploadStatusType.STOPPED.toString();
 	private boolean conditionChecked;
 	private boolean sampleChecked;
+	
+	private File experimentFile;
 
 	private final EventListener<Event> globalCommandListener = new EventListener<Event>() {
 		@Override
@@ -72,21 +75,9 @@ public class ExperimentViewModel {
 
 				switch (globalEvent.getCommand()) {
 				case "selectedReplicateChanged":
-					ExperimentViewModel.this
-							.selectedReplicateChanged((Replicate) args
-									.get("replicate"));
+					ExperimentViewModel.this.selectedReplicateChanged((Replicate) args.get("replicate"));
+					
 					break;
-				// case "selectedReplicatePlaced":
-				// ExperimentViewModel.this.selectedReplicatePlaced((Replicate)
-				// args.get("replicate"));
-				// break;
-				// case "onSampleSelected":
-				// this.selectedSample = (Sample) args.get("sample");
-				// break;
-				// case "onConditionSelected":
-				// this.selectedCondition = (ConditionGroup)
-				// args.get("condition");
-				// break;
 				}
 			}
 		}
@@ -110,6 +101,8 @@ public class ExperimentViewModel {
 			this.experiment.setUser((User) Sessions.getCurrent().getAttribute(
 					"user"));
 		}
+		
+		this.experimentFile = this.experiment.getFile();
 
 		EventQueues.lookup("experiment", true).subscribe(
 				this.globalCommandListener);
@@ -124,15 +117,19 @@ public class ExperimentViewModel {
 		}
 	}
 
-	// @GlobalCommand("selectedReplicatePlaced")
-	// @NotifyChange("selectedReplicate")
-	// public void selectedReplicatePlaced(
-	// @BindingParam("replicate") Replicate replicate
-	// ) {
-	// if (this.selectedReplicate == replicate) {
-	// BindUtils.postNotifyChange(null, null, this, "selectedReplicate");
-	// }
-	// }
+	@GlobalCommand
+	public void footerDocClicked() {
+		System.out.println("METHOD");
+//		try (FileInputStream fis = new FileInputStream(new File("src/main/resources/mla.pdf"))) {
+//			Filedownload.save(IOUtils.toByteArray(fis), "application/pdf", "mla.pdf");
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			throw new RuntimeException("File not found");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			throw new RuntimeException("File not found");
+//		}
+	}
 
 	public boolean isMetadataCompleted() {
 		return this.experiment.isMetadataComplete();
@@ -212,9 +209,6 @@ public class ExperimentViewModel {
 		this.selectedCondition = null;
 		this.selectedSample = selectedSample;
 		this.selectedReplicate = null;
-
-		// BindUtils.postGlobalCommand("experiment", null, "onSampleSelected",
-		// Collections.singletonMap("sample", (Object) selectedSample));
 	}
 
 	public Replicate getSelectedReplicate() {
@@ -252,6 +246,10 @@ public class ExperimentViewModel {
 
 	public void setSampleChecked(boolean sampleChecked) {
 		this.sampleChecked = sampleChecked;
+	}
+	
+	public File getExperimentFile() {
+		return experimentFile;
 	}
 
 	@Command
@@ -345,9 +343,9 @@ public class ExperimentViewModel {
 
 		try {
 			final File userDir = this.experiment.getUser().getDirectory();
-			
+
 			FileUtils.cleanDirectory(userDir);
-			
+
 			DataPackager.unpackageData(event.getMedia(), userDir);
 
 			this.uploadStatus = UploadStatusType.FINISHED.toString();
@@ -360,44 +358,44 @@ public class ExperimentViewModel {
 	public void downloadFile() {
 		File tmpDir = null;
 		File zipFile = null;
-		
+
 		try {
 			Configuration.getInstance().getTmpDirectory().mkdirs();
-			tmpDir = File.createTempFile(
-				this.getExperiment().getUser().getLogin(), "down", 
-				Configuration.getInstance().getTmpDirectory()
-			);
+			tmpDir = File.createTempFile(this.getExperiment().getUser()
+					.getLogin(), "down", Configuration.getInstance()
+					.getTmpDirectory());
 			tmpDir.delete();
 			tmpDir.mkdir();
-			
+
 			zipFile = File.createTempFile("mla", "zip");
 
 			final File userDir = this.experiment.getUser().getDirectory();
-			
+
 			System.out.println(this.getPathRegex());
-			this.outputSorter.sort(this.experiment, userDir, this.getPathRegex(), tmpDir);
-			
+			this.outputSorter.sort(this.experiment, userDir,
+					this.getPathRegex(), tmpDir);
+
 			File zip = DataPackager.zipData(tmpDir, zipFile);
-	
+
 			String fileExtension = FilenameUtils.getExtension(zip.getName());
-	
+
 			try (FileInputStream zipFIS = new FileInputStream(zip)) {
-				Filedownload.save(IOUtils.toByteArray(zipFIS), 
-					"application/" + fileExtension, 
-					this.experiment.getName() + ".zip"
-				);
+				Filedownload.save(IOUtils.toByteArray(zipFIS), "application/"
+						+ fileExtension, this.experiment.getName() + ".zip");
 			}
 		} catch (IOException io) {
 			io.printStackTrace();
-			Messagebox.show("Error compressing data", "Download Error", Messagebox.OK, Messagebox.EXCLAMATION);
+			Messagebox.show("Error compressing data", "Download Error",
+					Messagebox.OK, Messagebox.EXCLAMATION);
 		} finally {
 			if (tmpDir != null && tmpDir.exists())
 				try {
 					FileUtils.deleteDirectory(tmpDir);
 				} catch (IOException e) {
 					e.printStackTrace();
+					throw new RuntimeException("Could not delete temp directory");
 				}
-			
+
 			if (zipFile != null && zipFile.exists())
 				zipFile.delete();
 		}
@@ -419,7 +417,7 @@ public class ExperimentViewModel {
 		}
 
 		pathRegex += "[Replicate]";
-		
+
 		return pathRegex;
 	}
 }

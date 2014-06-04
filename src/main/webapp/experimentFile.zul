@@ -13,6 +13,6 @@
 				<label value="Replicate" />
 			</hbox>
 		</hlayout>
-		<button label="Download" onClick="@command('downloadFile')" disabled="@load(vm.isDirectoryStructureOk() ne true)" />
+		<button label="Download" onClick="@command('downloadFile')" disabled="@load(vm.experimentFile eq null)" />
 	</vlayout>
 </zk>

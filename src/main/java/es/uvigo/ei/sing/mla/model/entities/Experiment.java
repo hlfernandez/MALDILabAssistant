@@ -1,5 +1,6 @@
 package es.uvigo.ei.sing.mla.model.entities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -22,6 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import es.uvigo.ei.sing.mla.util.CellNameType;
+import es.uvigo.ei.sing.mla.util.Configuration;
 
 @Entity
 public class Experiment extends Observable {
@@ -215,6 +217,18 @@ public class Experiment extends Observable {
 		}
 
 		return samples;
+	}
+	
+	public File getFile() {
+		File experimentfile = null;
+		
+		for(File file : this.user.getDirectory().listFiles()) {
+			if(file.getName().equals(this.name)) {
+				experimentfile = file;
+			}
+		}
+		
+		return experimentfile;
 	}
 
 	public void addCondition(ConditionGroup condition) {
