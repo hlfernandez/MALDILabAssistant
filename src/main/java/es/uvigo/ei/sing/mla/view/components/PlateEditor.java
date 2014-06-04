@@ -110,15 +110,15 @@ public class PlateEditor extends Spreadsheet {
 	private void updateSelection() {
 		this.updateHighlightedCells();
 		
-		final List<Replicate> selectedReplicates = this.getSelectedReplicates();
-		
-		if (selectedReplicates.isEmpty()) {
-			this.focusTo(0, 0);
-		} else {
-			final Replicate firstSelected = selectedReplicates.get(0);
-			
-			this.focusTo(firstSelected.getRow(), firstSelected.getCol());
-		}
+//		final List<Replicate> selectedReplicates = this.getSelectedReplicates();
+//
+//		if (selectedReplicates.isEmpty()) {
+//			this.focusTo(0, 0);
+//		} else {
+//			final Replicate firstSelected = selectedReplicates.get(0);
+//			
+//			this.focusTo(firstSelected.getRow(), firstSelected.getCol());
+//		}
 	}
 
 	private void updateLabels() {
