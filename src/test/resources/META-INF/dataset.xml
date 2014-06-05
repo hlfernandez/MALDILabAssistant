@@ -6,19 +6,33 @@
 	<Experiment id="2" name="Experiment 2" description="Description"
 		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="12"
 		numCols="12" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
-	<Experiment id="1" description="Description"
-		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="10"
-		numCols="10" rowNameType="NUMERICAL" colNameType="NUMERICAL" login="pepe" />
+	<Experiment id="1" description="Description" startDate="2014-03-01 12:00:02"
+		endDate="2014-03-01 12:00:02" numRows="10" numCols="10" rowNameType="NUMERICAL"
+		colNameType="NUMERICAL" login="pepe" />
+
+	<Experiment id="3" name="Experiment 3" description="Description"
+		startDate="2014-03-01 12:00:02" endDate="2014-03-01 12:00:02" numRows="2"
+		numCols="5" rowNameType="UPPERCASE" colNameType="NUMERICAL" login="pepe" />
 
 	<ConditionGroup id="1" name="Condition 1" color="#FF0000"
 		experimentId="1" />
 	<ConditionGroup id="2" name="Condition 2" color="#FF0000"
 		experimentId="2" />
 
+	<ConditionGroup id="3" name="Condition 1" color="#FF0000"
+		experimentId="3" />
+	<ConditionGroup id="4" name="Condition 2" color="#00FF00"
+		experimentId="3" />
+
 	<Sample id="1" name="Sample 1" conditionId="1" />
 	<Sample id="2" name="Sample 2" conditionId="1" />
 	<Sample id="3" name="Sample 3" conditionId="2" />
 	<Sample id="4" name="Sample 4" conditionId="2" />
+
+	<Sample id="5" name="Sample 1.1" conditionId="3" />
+	<Sample id="6" name="Sample 1.2" conditionId="3" />
+	<Sample id="7" name="Sample 2.1" conditionId="4" />
+	<Sample id="8" name="Sample 2.2" conditionId="4" />
 
 	<Replicate id="1" name="Replicate 1" plateId="1" col="1" row="1"
 		sampleId="1" />
@@ -36,4 +50,45 @@
 		sampleId="4" />
 	<Replicate id="8" name="Replicate 8" plateId="8" col="8" row="8"
 		sampleId="4" />
+
+	<Replicate id="9" name="Replicate 1.1.1" plateId="1" col="1" row="1"
+		sampleId="5" />
+	<Replicate id="10" name="Replicate 1.1.2" plateId="1" col="2" row="1"
+		sampleId="5" />
+	<Replicate id="11" name="Replicate 1.1.3" plateId="1" col="3" row="1"
+		sampleId="5" />
+	<Replicate id="12" name="Replicate 1.1.4" plateId="1" col="4" row="1"
+		sampleId="5" />
+	<Replicate id="13" name="Replicate 1.1.5" plateId="1" col="5" row="1"
+		sampleId="5" />
+	<Replicate id="14" name="Replicate 1.2.1" plateId="1" col="1" row="2"
+		sampleId="6" />
+	<Replicate id="15" name="Replicate 1.2.2" plateId="1" col="2" row="2"
+		sampleId="6" />
+	<Replicate id="16" name="Replicate 1.2.3" plateId="1" col="3" row="2"
+		sampleId="6" />
+	<Replicate id="17" name="Replicate 1.2.4" plateId="1" col="4" row="2"
+		sampleId="6" />
+	<Replicate id="18" name="Replicate 1.2.5" plateId="1" col="5" row="2"
+		sampleId="6" />
+	<Replicate id="19" name="Replicate 2.1.1" plateId="2" col="1" row="1"
+		sampleId="7" />
+	<Replicate id="20" name="Replicate 2.1.2" plateId="2" col="2" row="1"
+		sampleId="7" />
+	<Replicate id="21" name="Replicate 2.1.3" plateId="2" col="3" row="1"
+		sampleId="7" />
+	<Replicate id="22" name="Replicate 2.1.4" plateId="2" col="4" row="1"
+		sampleId="7" />
+	<Replicate id="23" name="Replicate 2.1.5" plateId="2" col="5" row="1"
+		sampleId="7" />
+	<Replicate id="24" name="Replicate 2.2.1" plateId="2" col="1" row="2"
+		sampleId="8" />
+	<Replicate id="25" name="Replicate 2.2.2" plateId="2" col="2" row="2"
+		sampleId="8" />
+	<Replicate id="26" name="Replicate 2.2.3" plateId="2" col="3" row="2"
+		sampleId="8" />
+	<Replicate id="27" name="Replicate 2.2.4" plateId="2" col="4" row="2"
+		sampleId="8" />
+	<Replicate id="28" name="Replicate 2.2.5" plateId="2" col="5" row="2"
+		sampleId="8" />
 </dataset>

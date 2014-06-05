@@ -21,11 +21,11 @@ public class ConditionGroupPathCreator extends AbstractPathCreator {
 	@Override
 	public void create(File baseDirectory, ExperimentListFilter filter) throws IOException {
 		for (ConditionGroup condition : filter.listConditions()) {
-			final File sampleDir = new File(baseDirectory, condition.getName());
-			sampleDir.mkdir();
+			final File conditionDir = new File(baseDirectory, condition.getName());
+			conditionDir.mkdir();
 
 			if (this.child != null) {
-				this.child.create(sampleDir, createFilter(condition));
+				this.child.create(conditionDir, createFilter(condition));
 			}
 		}
 	}
