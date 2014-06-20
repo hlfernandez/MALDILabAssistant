@@ -1,7 +1,5 @@
 package es.uvigo.ei.sing.mla.daos;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
@@ -10,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
-import es.uvigo.ei.sing.mla.model.entities.Experiment;
 
 @Repository
 public class ConditionGroupDAOImpl implements ConditionGroupDAO {
@@ -45,16 +42,6 @@ public class ConditionGroupDAOImpl implements ConditionGroupDAO {
 		em.remove(condition);
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<ConditionGroup> list(Experiment experiment) {
-		return em
-				.createQuery(
-						"FROM ConditionGroup ex WHERE ex.experiment = :experiment",
-						ConditionGroup.class)
-				.setParameter("experiment", experiment).getResultList();
-	}
-	
 	@Override
 	@Transactional(readOnly = true)
 	public ConditionGroup reload(ConditionGroup condition) {

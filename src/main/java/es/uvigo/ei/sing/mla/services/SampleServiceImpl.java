@@ -1,14 +1,11 @@
 package es.uvigo.ei.sing.mla.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import es.uvigo.ei.sing.mla.daos.SampleDAO;
-import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 @Service("sampleService")
@@ -35,10 +32,5 @@ public class SampleServiceImpl implements SampleService {
 	@Override
 	public void delete(Sample sample) {
 		dao.delete(sample);
-	}
-
-	@Override
-	public List<Sample> list(ConditionGroup condition) {
-		return dao.list(condition);
 	}
 }

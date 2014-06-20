@@ -1,7 +1,5 @@
 package es.uvigo.ei.sing.mla.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import es.uvigo.ei.sing.mla.daos.ReplicateDAO;
 import es.uvigo.ei.sing.mla.model.entities.Replicate;
-import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 @Service("replicateService")
 @Scope(value = "singleton", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -35,10 +32,5 @@ public class ReplicateServiceImpl implements ReplicateService {
 	@Override
 	public void delete(Replicate replicate) {
 		dao.delete(replicate);
-	}
-
-	@Override
-	public List<Replicate> list(Sample sample) {
-		return dao.list(sample);
 	}
 }

@@ -26,7 +26,8 @@ public class HomeViewModel {
 	private ExperimentService experimentService;
 
 	private List<Experiment> experiments = null;
-	private ExperimentSearchFilter filter = new ExperimentSearchFilter(this.getUser());
+	private ExperimentSearchFilter filter = new ExperimentSearchFilter(
+			this.getUser());
 
 	private User getUser() {
 		final Session session = Sessions.getCurrent(false);
@@ -41,7 +42,7 @@ public class HomeViewModel {
 
 	public List<Experiment> getExperimentModel() {
 		if (experiments == null) {
-			return this.experimentService.list(getUser());
+			return getUser().getExperiments();
 		}
 
 		return new ListModelList<Experiment>(experiments);

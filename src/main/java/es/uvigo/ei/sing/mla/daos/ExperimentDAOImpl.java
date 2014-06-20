@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
-import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentSearchFilter;
 
 @Repository
@@ -56,20 +55,13 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Experiment> list(User user) {
-		return em.createQuery("FROM Experiment ex WHERE ex.user = :user", Experiment.class)
-			.setParameter("user", user)
-		.getResultList();
-	}
-
-	@Override
-	@Transactional(readOnly = true)
 	public List<Experiment> listFilter(ExperimentSearchFilter filter) {
 		List<Experiment> filterExperiments = new ArrayList<Experiment>();
 		String name = filter.getName().toLowerCase();
 
-		for (Experiment exp : this.list(filter.getUser())) {
-			if (exp.getName() != null && exp.getName().toLowerCase().contains(name)) {
+		for (Experiment exp : filter.getUser().getExperiments()) {
+			if (exp.getName() != null
+					&& exp.getName().toLowerCase().contains(name)) {
 				filterExperiments.add(exp);
 			}
 		}
