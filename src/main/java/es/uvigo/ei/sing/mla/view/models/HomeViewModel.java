@@ -2,6 +2,7 @@ package es.uvigo.ei.sing.mla.view.models;
 
 import java.util.List;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -64,7 +65,8 @@ public class HomeViewModel {
 			public void onEvent(ClickEvent event) throws Exception {
 				if (Messagebox.Button.YES.equals(event.getButton())) {
 					HomeViewModel.this.experimentService.delete(experiment);
-					Executions.getCurrent().sendRedirect("home.zul");
+					HomeViewModel.this.changeFilter();
+					BindUtils.postNotifyChange(null, null, HomeViewModel.this, "experimentModel");
 				}
 			}
 		};
@@ -80,8 +82,8 @@ public class HomeViewModel {
 		Executions.getCurrent().sendRedirect("experiment.zul");
 	}
 
-	@NotifyChange("experimentModel")
 	@Command
+	@NotifyChange("experimentModel")
 	public void changeFilter() {
 		experiments = this.experimentService.listFilter(filter);
 	}

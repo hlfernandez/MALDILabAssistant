@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.uvigo.ei.sing.mla.model.entities.Experiment;
+import es.uvigo.ei.sing.mla.model.entities.User;
 import es.uvigo.ei.sing.mla.services.ExperimentSearchFilter;
 
 @Repository
@@ -50,7 +51,7 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	@Override
 	@Transactional
 	public void delete(Experiment experiment) {
-		em.remove(experiment);
+		em.remove(this.get(experiment.getId()));
 	}
 
 	@Override
@@ -58,8 +59,9 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	public List<Experiment> listFilter(ExperimentSearchFilter filter) {
 		List<Experiment> filterExperiments = new ArrayList<Experiment>();
 		String name = filter.getName().toLowerCase();
+		User user = this.em.find(User.class, filter.getUser().getLogin());
 
-		for (Experiment exp : filter.getUser().getExperiments()) {
+		for (Experiment exp : user.getExperiments()) {
 			if (exp.getName() != null
 					&& exp.getName().toLowerCase().contains(name)) {
 				filterExperiments.add(exp);
