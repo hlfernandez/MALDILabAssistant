@@ -52,6 +52,17 @@ public class HomeViewModel {
 	public ExperimentSearchFilter getFilter() {
 		return this.filter;
 	}
+	
+	@Command
+	public void logout() {
+		final Session session = Sessions.getCurrent(false);
+		
+		if(session != null && session.hasAttribute("user")) {
+			session.setAttribute("user", null);
+		}
+		
+		Executions.sendRedirect("logout.zul");
+	}
 
 	@Command
 	public void edit(@BindingParam("experiment") Experiment experiment) {

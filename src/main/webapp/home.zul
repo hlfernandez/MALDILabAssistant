@@ -5,7 +5,9 @@
 			<hbox hflex="true" height="540px" align="center" pack="center">
 				<window apply="org.zkoss.bind.BindComposer" title="Experiments"
 					width="720px" height="400px" border="normal"
-					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.HomeViewModel')">
+					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.HomeViewModel')"
+					closable="true"
+					onClose="@command('logout')">
 
 					<grid id="box" width="100%" vflex="true" model="@load(vm.experimentModel)"
 						autopaging="true">

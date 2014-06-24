@@ -345,12 +345,7 @@ public class ExperimentViewModel {
 		File zipFile = null;
 
 		try {
-			Configuration.getInstance().getTmpDirectory().mkdirs();
-			tmpDir = File.createTempFile(this.getExperiment().getUser()
-					.getLogin(), "down", Configuration.getInstance()
-					.getTmpDirectory());
-			tmpDir.delete();
-			tmpDir.mkdir();
+			tmpDir = createTmpDirectory();
 
 			zipFile = File.createTempFile("mla", "zip");
 
@@ -384,6 +379,17 @@ public class ExperimentViewModel {
 			if (zipFile != null && zipFile.exists())
 				zipFile.delete();
 		}
+	}
+
+	private File createTmpDirectory() throws IOException {
+		File tmpDir;
+		Configuration.getInstance().getTmpDirectory().mkdirs();
+		tmpDir = File.createTempFile(this.getExperiment().getUser()
+				.getLogin(), "down", Configuration.getInstance()
+				.getTmpDirectory());
+		tmpDir.delete();
+		tmpDir.mkdir();
+		return tmpDir;
 	}
 
 	public boolean isDirectoryStructureOk() {
