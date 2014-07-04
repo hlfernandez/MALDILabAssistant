@@ -1,25 +1,30 @@
 <zk>
+	<html>
+		<!-- Fork me on Github ribbon -->
+		<a href="https://github.com/mirkeet/MALDILabAssistant">
+			<img style="position: absolute; top: 0; right: 0; border: 0;"
+				src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
+				alt="Fork me on GitHub"
+				data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" />
+		</a>
+	</html>
 	<div width="960px" style="margin: 0 auto;">
-		<vbox hflex="true" height="540px" align="center"
-			pack="center">
+		<vbox hflex="true" height="540px" align="center" pack="center">
 			<include src="header.zul" />
-			<hbox hflex="true" height="270px" align="center"
-				pack="center">
-				<window apply="org.zkoss.bind.BindComposer"
-					title="Sign up" width="240px" border="normal"
+			<hbox hflex="true" height="270px" align="center" pack="center">
+				<window apply="org.zkoss.bind.BindComposer" title="Sign up"
+					width="240px" border="normal"
 					viewModel="@id('user') @init('es.uvigo.ei.sing.mla.view.models.UserViewModel')">
 
 					<vlayout>
 						<label value="Username" />
-						<textbox value="@bind(user.signUpUsername)"
-							hflex="true" />
+						<textbox value="@bind(user.signUpUsername)" hflex="true" />
 
 						<label value="Password" />
-						<textbox type="password"
-							value="@bind(user.signUpPassword)" hflex="true" />
+						<textbox type="password" value="@bind(user.signUpPassword)"
+							hflex="true" />
 
-						<button label="Sign up"
-							onClick="@command('signUp')" />
+						<button label="Sign up" onClick="@command('signUp')" />
 
 						<hlayout>
 							<a label="Sign in" href="index.zul" />

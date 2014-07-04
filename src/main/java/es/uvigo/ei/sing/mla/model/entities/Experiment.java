@@ -23,7 +23,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import es.uvigo.ei.sing.mla.util.CellNameType;
-import es.uvigo.ei.sing.mla.util.Configuration;
 
 @Entity
 public class Experiment extends Observable {
@@ -218,16 +217,19 @@ public class Experiment extends Observable {
 
 		return samples;
 	}
-	
+
 	public File getFile() {
 		File experimentfile = null;
-		
-		for(File file : this.user.getDirectory().listFiles()) {
-			if(file.getName().equals(this.name)) {
-				experimentfile = file;
+		File[] files = this.user.getDirectory().listFiles();
+
+		if (files != null) {
+			for (File file : files) {
+				if (file.getName().equals(this.name)) {
+					experimentfile = file;
+				}
 			}
 		}
-		
+
 		return experimentfile;
 	}
 

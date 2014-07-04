@@ -7,8 +7,7 @@
 				<window title="Experiment" border="normal" closable="true"
 					apply="org.zkoss.bind.BindComposer" binder="@init(queueName='experiment')"
 					viewModel="@id('vm') @init('es.uvigo.ei.sing.mla.view.models.ExperimentViewModel')"
-					onClose="@command('exit')"
-				>
+					onClose="@command('exit')" >
 					<vlayout>
 						<tabbox>
 							<tabs>
