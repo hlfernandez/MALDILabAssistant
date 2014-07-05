@@ -16,7 +16,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import es.uvigo.ei.sing.mla.model.entities.ConditionGroup;
 import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,12 +76,5 @@ public class SampleDAOTest {
 		sampleDAO.delete(sample);
 
 		assertThat(sampleDAO.get(1)).isNull();
-	}
-
-	@Test
-	public void testSampleDAOCanList() {
-		ConditionGroup condition = conditionDAO.get(1);
-
-		assertThat(sampleDAO.list(condition).size()).isEqualTo(2);
 	}
 }

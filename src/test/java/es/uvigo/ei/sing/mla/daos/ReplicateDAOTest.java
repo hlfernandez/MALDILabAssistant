@@ -17,7 +17,6 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import es.uvigo.ei.sing.mla.model.entities.Replicate;
-import es.uvigo.ei.sing.mla.model.entities.Sample;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -77,12 +76,5 @@ public class ReplicateDAOTest {
 		replicateDAO.delete(replicate);
 
 		assertThat(replicateDAO.get(1)).isNull();
-	}
-
-	@Test
-	public void testReplicateDAOCanList() {
-		Sample sample = sampleDAO.get(1);
-
-		assertThat(replicateDAO.list(sample).size()).isEqualTo(2);
 	}
 }

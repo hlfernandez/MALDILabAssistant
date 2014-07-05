@@ -56,7 +56,8 @@ public class ExperimentDAOTest {
 
 		experimentDAO.reload(experiment);
 
-		assertThat(experimentDAO.get(experiment.getId()).getName()).isEqualTo("Experiment 2");
+		assertThat(experimentDAO.get(experiment.getId()).getName()).isEqualTo(
+				"Experiment 2");
 	}
 
 	@Test
@@ -77,13 +78,6 @@ public class ExperimentDAOTest {
 		experimentDAO.delete(experiment);
 
 		assertThat(experimentDAO.get(1)).isNull();
-	}
-
-	@Test
-	public void testExperimentDAOCanList() {
-		User user = userDAO.get("pepe");
-
-		assertThat(experimentDAO.list(user).size()).isEqualTo(2);
 	}
 
 	@Test
