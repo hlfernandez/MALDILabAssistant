@@ -5,13 +5,14 @@ import java.util.List;
 
 public enum CellNameType {
 	NUMERICAL, LOWERCASE, UPPERCASE;
-	
+
 	public String indexToLabel(int index) {
-		if (index < 0) throw new IndexOutOfBoundsException("index can't be null");
-		
-		return createLabels(index + 1)[index];
+		if (index < 0)
+			throw new IndexOutOfBoundsException("index can't be null");
+
+		return createLabels(index)[index - 1];
 	}
-	
+
 	public String[] createLabels(int num) {
 		final List<String> titles = new ArrayList<>();
 
@@ -74,7 +75,8 @@ public enum CellNameType {
 		}
 
 		if (str.charAt(end) == z) {
-			String inflated = inflate(new StringBuilder(str.substring(0, end))).append(a).toString();
+			String inflated = inflate(new StringBuilder(str.substring(0, end)))
+					.append(a).toString();
 
 			return new StringBuilder(inflated);
 		}

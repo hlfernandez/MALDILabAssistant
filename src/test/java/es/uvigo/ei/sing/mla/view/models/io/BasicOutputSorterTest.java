@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -38,26 +39,34 @@ public class BasicOutputSorterTest {
 	@Autowired
 	OutputSorter sorter;
 
+	private File tmpDir;
+
 	@Before
-	public void createTestData() {
+	public void createTmpDir() throws IOException {
+		tmpDir = new File("src/test/resources/tmp");
+		FileUtils.cleanDirectory(tmpDir);
+	}
+	
+	@Before
+	public void cleanTmpDir() throws IOException {
+		FileUtils.cleanDirectory(tmpDir);
 	}
 
 	@Test
 	public void testBasicOutputSorterCanSort() throws IOException {
-		File datasetDir = new File("src/test/resources/dataset");
-		File tmpDir = new File("src/test/resources/tmp");
+		final File datasetDir = new File("src/test/resources/dataset");
+		final File exampleDir = new File("src/test/resources/exp1");
 
 		sorter.sort(service.get(3), datasetDir, "[Condition]/[Sample]/[Replicate]", tmpDir);
 
-		File[] datasetFiles = datasetDir.listFiles();
-		File[] tmpFiles = tmpDir.listFiles();
-
-		for (int i = 0; i < datasetFiles.length; ++i) {
-			assertThat(datasetFiles[i].getName()).isEqualTo(
-					tmpFiles[i].getName());
-		}
+		final File[] datasetFiles = exampleDir.listFiles();
+		final File[] tmpFiles = tmpDir.listFiles();
+		Arrays.sort(datasetFiles);
+		Arrays.sort(tmpFiles);
 		
-		FileUtils.cleanDirectory(tmpDir);
+		for (int i = 0; i < datasetFiles.length; ++i) {
+			assertThat(datasetFiles[i].getName()).isEqualTo(tmpFiles[i].getName());
+		}
 	}
 
 	@Test
@@ -65,14 +74,11 @@ public class BasicOutputSorterTest {
 		assertThat(sorter.checkPath("[Replicate]")).isTrue();
 		assertThat(sorter.checkPath("[Sample]/[Replicate]")).isTrue();
 		assertThat(sorter.checkPath("[Condition]/[Replicate]")).isTrue();
-		assertThat(sorter.checkPath("[Condition]/[Sample]/[Replicate]"))
-				.isTrue();
+		assertThat(sorter.checkPath("[Condition]/[Sample]/[Replicate]")).isTrue();
 
 		assertThat(sorter.checkPath("/[Replicate]")).isFalse();
 		assertThat(sorter.checkPath("[Condition]/[Sample]")).isFalse();
-		assertThat(sorter.checkPath("[Condition]/[Replicate]/[Sample]"))
-				.isFalse();
-		assertThat(sorter.checkPath("/[Condition]/[Sample]/[Replicate]"))
-				.isFalse();
+		assertThat(sorter.checkPath("[Condition]/[Replicate]/[Sample]")).isFalse();
+		assertThat(sorter.checkPath("/[Condition]/[Sample]/[Replicate]")).isFalse();
 	}
 }
